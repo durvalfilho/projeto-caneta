@@ -1,0 +1,138 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const navItems = [
+	{ label: 'Início', href: '/' },
+	{ label: 'Tecnologia', href: '/#tech-specs' },
+	{ label: 'Catálogo', href: '/pagina-2' },
+	{ label: 'Produto', href: '/produto' },
+];
+---
+
+<!-- NAVBAR -->
+<header class:list={["fixed w-full z-50 top-0 transition-all duration-300", className]} id="navbar">
+	<div class="absolute inset-0 bg-white/70 backdrop-blur-md border-b border-stone-200/50"></div>
+	<div class="max-w-[1440px] mx-auto px-6 py-4 relative flex justify-between items-center">
+		<!-- 1. Minimalist Logo (Icon + Name Only) -->
+		<a href="/" class="flex items-center gap-2.5 group cursor-pointer text-stone-900 hover:text-stone-600 transition-colors">
+			<iconify-icon
+				icon="solar:pen-new-square-linear"
+				class="text-xl transition-transform duration-300 group-hover:scale-105"
+			></iconify-icon>
+			<span class="font-display font-medium tracking-tight text-lg">
+				ARTOOLS
+			</span>
+		</a>
+
+		<!-- 2. Nav Links (With Dynamic Active Page Indicator) -->
+		<nav
+			id="nav-desktop"
+			class="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest"
+		>
+			{
+				navItems.map((item) => {
+					const isActive =
+						item.href === '/'
+							? pathname === '/'
+							: item.href === '/#tech-specs'
+								? false
+								: pathname.startsWith(item.href) || (item.href === '/produto' && pathname.startsWith('/pagina-3'));
+
+					return (
+						<a
+							href={item.href}
+							class:list={[
+								'py-1 transition-all duration-200',
+								isActive
+									? 'text-stone-900 font-semibold border-b border-stone-900'
+									: 'text-stone-500 hover:text-stone-900 border-b border-transparent',
+							]}
+						>
+							{item.label}
+						</a>
+					);
+				})
+			}
+		</nav>
+
+		<!-- 3. Mobile Menu Toggle (Cart Removed) -->
+		<div class="md:hidden flex items-center">
+			<button
+				id="mobile-menu-btn"
+				class="text-stone-900 hover:text-stone-600 transition-colors p-1 flex items-center justify-center cursor-pointer"
+				aria-label="Abrir menu"
+			>
+				<iconify-icon icon="solar:hamburger-menu-linear" class="text-2xl"></iconify-icon>
+			</button>
+		</div>
+	</div>
+
+	<!-- Mobile Menu Dropdown -->
+	<div
+		id="mobile-menu"
+		class="hidden md:hidden fixed inset-x-0 top-[65px] bg-[#EAEAE5]/95 backdrop-blur-md border-b border-stone-300 px-6 py-5 transition-all duration-300 shadow-md"
+	>
+		<nav class="flex flex-col gap-3 text-xs font-mono uppercase tracking-widest">
+			{
+				navItems.map((item) => {
+					const isActive =
+						item.href === '/'
+							? pathname === '/'
+							: item.href === '/#tech-specs'
+								? false
+								: pathname.startsWith(item.href) || (item.href === '/produto' && pathname.startsWith('/pagina-3'));
+
+					return (
+						<a
+							href={item.href}
+							class:list={[
+								'py-2 transition-colors flex items-center justify-between',
+								isActive
+									? 'text-stone-900 font-semibold border-b border-stone-900'
+									: 'text-stone-500 hover:text-stone-900 border-b border-transparent',
+							]}
+						>
+							<span>{item.label}</span>
+							{isActive && <span class="w-1.5 h-1.5 bg-stone-900 rounded-sm"></span>}
+						</a>
+					);
+				})
+			}
+		</nav>
+	</div>
+
+	<script is:inline>
+		document.addEventListener('DOMContentLoaded', () => {
+			const menuBtn = document.getElementById('mobile-menu-btn');
+			const mobileMenu = document.getElementById('mobile-menu');
+			if (menuBtn && mobileMenu) {
+				menuBtn.addEventListener('click', () => {
+					mobileMenu.classList.toggle('hidden');
+				});
+			}
+
+			// Ensure client-side match for active navigation indicator
+			const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+			document.querySelectorAll('#nav-desktop a, #mobile-menu a').forEach((link) => {
+				const href = link.getAttribute('href')?.replace(/\/$/, '') || '';
+				if (!href) return;
+				const isHome = href === '' || href === '/';
+				const isMatch = isHome
+					? currentPath === '/'
+					: href.startsWith('/#')
+						? false
+						: currentPath.startsWith(href) || (href === '/produto' && currentPath.startsWith('/pagina-3'));
+
+				if (isMatch) {
+					link.classList.remove('text-stone-500', 'border-transparent');
+					link.classList.add('text-stone-900', 'font-semibold', 'border-stone-900');
+				}
+			});
+		});
+	</script>
+</header>

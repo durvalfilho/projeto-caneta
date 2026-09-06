@@ -1,0 +1,28 @@
+---
+interface Props {
+	class?: string;
+	src?: string;
+}
+
+const {
+	class: className = '',
+	src = '/assets/raw_files/video.mp4',
+} = Astro.props;
+---
+
+<section
+	class:list={[
+		'relative w-full h-[250px] md:h-[340px] lg:h-[380px] overflow-hidden bg-black z-20 select-none',
+		className,
+	]}
+>
+	<video
+		autoplay
+		loop
+		muted
+		playsinline
+		class="w-full h-full object-cover"
+	>
+		<source src={src} type="video/mp4" />
+	</video>
+</section>

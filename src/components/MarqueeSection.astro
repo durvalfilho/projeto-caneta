@@ -1,0 +1,106 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const words = [
+	'Precisão Absoluta',
+	'Fluidez Sem Fim',
+	'A Alma do Traço',
+	'Elegância Atemporal',
+	'Design Invisível',
+	'Mente & Papel',
+	'Caligrafia Molecular',
+	'Perfeição em Cada Gesto',
+	'Zero Fricção',
+	'Alquimia da Escrita',
+];
+---
+
+<section
+	class:list={[
+		'relative z-20 bg-black text-white py-3 md:py-4 overflow-hidden border-y border-neutral-900 select-none',
+		className,
+	]}
+>
+	<!-- Ambient Background Glow -->
+	<div
+		class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[120px] bg-neutral-800/15 blur-[80px] rounded-full pointer-events-none"
+	>
+	</div>
+
+	<!-- Single Row Marquee Container with edge fading masks -->
+	<div
+		class="relative z-10 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+	>
+		<div class="overflow-hidden flex whitespace-nowrap group cursor-default py-2">
+			<!-- Track 1 -->
+			<div class="marquee-track flex items-center shrink-0 py-1">
+				{
+					words.map((word, index) => (
+						<div class="flex items-center mx-5 md:mx-8">
+							<span
+								class:list={[
+									'font-luxury text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide leading-[1.6] px-2 py-1 inline-block transition-all duration-500',
+									index % 2 === 0
+										? 'text-white/95 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]'
+										: 'text-neutral-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]',
+								]}
+							>
+								{word}
+							</span>
+							<span class="ml-10 md:ml-14 text-neutral-600 text-xs md:text-sm font-serif select-none">
+								✦
+							</span>
+						</div>
+					))
+				}
+			</div>
+
+			<!-- Track 2 (Seamless loop duplicate) -->
+			<div class="marquee-track flex items-center shrink-0 py-1" aria-hidden="true">
+				{
+					words.map((word, index) => (
+						<div class="flex items-center mx-5 md:mx-8">
+							<span
+								class:list={[
+									'font-luxury text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide leading-[1.6] px-2 py-1 inline-block transition-all duration-500',
+									index % 2 === 0
+										? 'text-white/95 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]'
+										: 'text-neutral-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]',
+								]}
+							>
+								{word}
+							</span>
+							<span class="ml-10 md:ml-14 text-neutral-600 text-xs md:text-sm font-serif select-none">
+								✦
+							</span>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.marquee-track {
+		animation: marquee-scroll 90s linear infinite;
+		will-change: transform;
+	}
+
+	.group:hover .marquee-track {
+		animation-play-state: paused;
+	}
+
+	@keyframes marquee-scroll {
+		0% {
+			transform: translateX(0%);
+		}
+		100% {
+			transform: translateX(-50%);
+		}
+	}
+</style>

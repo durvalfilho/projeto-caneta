@@ -1,0 +1,465 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import ProductCard from '../components/ProductCard.astro';
+
+const product = {
+	id: '01',
+	title: 'Titanium Stealth Minimalist',
+	reference: 'REF. AR-TS01',
+	series: 'Precision Series • 01',
+	badgeLeft: 'EDIÇÃO LIMITADA',
+	badgeRight: 'ESGOTADO',
+	images: [
+		{
+			src: '/assets/pens/pen_raw_titanium.jpg',
+			label: 'Visão Geral',
+		},
+		{
+			src: '/assets/pens/pen_stealth_black.jpg',
+			label: 'Empunhadura Laser',
+		},
+		{
+			src: '/assets/pens/pen_space_silver.jpg',
+			label: 'Ponta & Rolamento',
+		},
+		{
+			src: '/assets/pens/pen_forged_carbon.jpg',
+			label: 'Chassi & Acabamento',
+		},
+	],
+	description:
+		'Design ultra-leve de precisão usinado em titânio aeroespacial Grau 5 com equilíbrio de peso milimétrico. Forjada a partir de uma barra sólida de Titânio Ti-6Al-4V usinada em CNC de 5 eixos para eliminar qualquer micro-vibração durante a escrita.',
+	specs: [
+		{ label: 'PENA', value: 'Ouro 18k Fine (0.3 mm)' },
+		{ label: 'MATERIAL', value: 'Titânio Ti-6Al-4V (Grau 5)' },
+		{ label: 'PESO', value: '14.0 g (Equilíbrio 50/50)' },
+		{ label: 'RECARGA', value: 'Tinteiro / Pistão' },
+		{ label: 'MECANISMO', value: 'Silent-Click Amortecido' },
+		{ label: 'TOLERÂNCIA', value: '± 0.005 mm' },
+	],
+	related: [
+		{
+			id: '02',
+			title: 'Precision Ceramic White',
+			badgeLeft: 'NOVO LANÇAMENTO',
+			badgeRight: 'EM BREVE',
+			image: '/assets/pens/pen_stealth_black.jpg',
+			description:
+				'Revestimento cerâmico de alta resistência com acabamento fosco aveludado e mecanismo retrátil hidráulico.',
+			pena: 'Aço Inox M',
+			material: 'Cerâmica Zircônia',
+			recarga: 'Rollerball G2',
+		},
+		{
+			id: '03',
+			title: 'Obsidian Matte Black',
+			badgeLeft: 'COLEÇÃO 2026',
+			badgeRight: 'ESGOTADO',
+			image: '/assets/pens/pen_champagne_gold.jpg',
+			description:
+				'Acabamento obsidian antirreflexo com gravura a laser e sistema de amortecimento tátil ao escrever.',
+			pena: 'Carbon EF',
+			material: 'Alumínio Anodizado',
+			recarga: 'Esferográfica',
+		},
+		{
+			id: '04',
+			title: 'Precision Midnight Navy',
+			badgeLeft: 'ATELIER SERIES',
+			badgeRight: 'EM BREVE',
+			image: '/assets/pens/pen_midnight_blue.jpg',
+			description:
+				'Pigmentação eletroquímica azul profunda com clip negro PVD e mecanismo de amortecimento silencioso.',
+			pena: '0.3 mm Fine',
+			material: 'Alumínio 6061',
+			recarga: 'Rollerball G2',
+		},
+	],
+};
+---
+
+<Layout title={`${product.title} | ARTOOLS.PRO`}>
+	<main class="min-h-screen bg-[#EAEAE5] pt-28 md:pt-36 selection:bg-stone-900 selection:text-white">
+		<!-- 1. BREADCRUMBS -->
+		<div class="max-w-[1440px] mx-auto px-6 md:px-24 mb-10 text-left">
+			<nav class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-stone-500">
+				<a href="/" class="hover:text-stone-900 transition-colors">Início</a>
+				<span>/</span>
+				<a href="/pagina-2" class="hover:text-stone-900 transition-colors">Catálogo</a>
+				<span>/</span>
+				<span class="text-stone-900 font-medium">{product.title}</span>
+			</nav>
+		</div>
+
+		<!-- 2. PRODUCT HERO SECTION -->
+		<section class="max-w-[1440px] mx-auto px-6 md:px-24 pb-16 md:pb-24">
+			<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+				<!-- LEFT: GALLERY -->
+				<div class="lg:col-span-7 space-y-4">
+					<!-- Main Big Image Stage -->
+					<div
+						class="relative w-full aspect-[4/3] bg-stone-100 border border-stone-300 rounded-sm overflow-hidden"
+					>
+						<img
+							id="main-product-img"
+							src={product.images[0].src}
+							alt={product.title}
+							class="w-full h-full object-cover transition-all duration-500"
+						/>
+
+						<!-- Floating Badges -->
+						{product.badgeLeft && (
+							<div class="absolute top-3.5 left-3.5">
+								<span class="text-[9px] font-mono uppercase tracking-widest px-2.5 py-1 bg-black text-white font-medium rounded-sm">
+									{product.badgeLeft}
+								</span>
+							</div>
+						)}
+						{product.badgeRight && (
+							<div class="absolute top-3.5 right-3.5">
+								<span class="text-[9px] font-mono uppercase tracking-widest px-2.5 py-1 bg-white text-stone-900 font-medium rounded-sm">
+									{product.badgeRight}
+								</span>
+							</div>
+						)}
+					</div>
+
+					<!-- Thumbnails Selector -->
+					<div class="grid grid-cols-4 gap-3">
+						{
+							product.images.map((img, idx) => (
+								<button
+									class:list={[
+										'thumb-btn relative aspect-square border rounded-sm overflow-hidden transition-all duration-200 cursor-pointer bg-stone-100',
+										idx === 0
+											? 'border-stone-900 ring-1 ring-stone-900'
+											: 'border-stone-300 opacity-60 hover:opacity-100',
+									]}
+									data-img={img.src}
+									aria-label={img.label}
+								>
+									<img src={img.src} alt={img.label} class="w-full h-full object-cover" />
+								</button>
+							))
+						}
+					</div>
+				</div>
+
+				<!-- RIGHT: PRODUCT INFO & CTA -->
+				<div class="lg:col-span-5 flex flex-col justify-between text-left">
+					<div>
+						<!-- Pill Badge -->
+						<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-stone-200/60 border border-stone-300/80 text-stone-600 text-xs font-mono mb-4">
+							<span class="w-1.5 h-1.5 bg-stone-500 rounded-sm"></span>
+							<span>{product.series}</span>
+						</div>
+
+						<!-- Title -->
+						<h1
+							class="font-display text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-stone-900 mb-4 leading-[1.1]"
+						>
+							{product.title}
+						</h1>
+
+						<!-- Description -->
+						<p class="text-stone-600 text-sm md:text-base font-light leading-relaxed mb-8">
+							{product.description}
+						</p>
+
+						<!-- Minimalist 2-Column Specs Table -->
+						<div class="border-t border-stone-300 mb-8">
+							{
+								product.specs.map((item) => (
+									<div class="grid grid-cols-12 py-3.5 border-b border-stone-300/80 items-baseline gap-4">
+										<div class="col-span-5 text-xs font-mono uppercase tracking-[0.18em] font-semibold text-stone-500">
+											{item.label}
+										</div>
+										<div class="col-span-7 text-sm font-sans text-stone-900 font-normal">
+											{item.value}
+										</div>
+									</div>
+								))
+							}
+						</div>
+					</div>
+
+					<!-- ACTION CTA BUTTON -->
+					<div>
+						<Button
+							variant="primary"
+							size="lg"
+							fullWidth={true}
+							icon="solar:bell-linear"
+							iconPosition="left"
+							class="notify-btn rounded-sm py-3.5 text-xs font-mono uppercase tracking-widest"
+							data-product={product.title}
+						>
+							<span>AVISE-ME</span>
+						</Button>
+
+						<div class="flex items-center justify-between text-[11px] font-mono text-stone-500 pt-4">
+							<span>✓ Garantia Vitalícia</span>
+							<span>✓ Envio Seguro</span>
+							<span>✓ Certificado Suíço</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 3. ARCHITECTURE & CRAFTSMANSHIP HIGHLIGHT (CONSISTENT WITH OTHER PAGES) -->
+		<section class="max-w-[1440px] mx-auto px-6 md:px-24 pb-20 md:pb-28">
+			<div
+				class="p-8 md:p-12 border border-stone-300 bg-white/60 backdrop-blur-sm rounded-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 text-left"
+			>
+				<div class="space-y-3 max-w-2xl">
+					<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-stone-200/70 border border-stone-300/80 text-stone-600 text-xs font-mono">
+						<span class="w-1.5 h-1.5 bg-stone-500 rounded-sm"></span>
+						<span>Engenharia de Precisão</span>
+					</div>
+					<h2 class="font-display text-2xl md:text-3xl font-medium tracking-tight text-stone-900 leading-snug">
+						Arquitetura em Titânio & Equilíbrio Neutro
+					</h2>
+					<p class="text-stone-600 text-sm md:text-base font-light leading-relaxed">
+						Usinada a partir de uma barra sólida de Titânio Ti-6Al-4V (Grau 5) sob tolerâncias micrométricas. Centro de gravidade calibrado no ponto de apoio para eliminar a fadiga e proporcionar escrita contínua.
+					</p>
+				</div>
+				<div class="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full lg:w-auto shrink-0 font-mono text-xs">
+					<div class="border border-stone-300/80 bg-stone-50/80 p-4 rounded-sm text-left">
+						<span class="text-[10px] text-stone-400 block uppercase tracking-wider mb-1">Tolerância</span>
+						<span class="text-sm font-semibold text-stone-900 font-mono">± 0.005 mm</span>
+					</div>
+					<div class="border border-stone-300/80 bg-stone-50/80 p-4 rounded-sm text-left">
+						<span class="text-[10px] text-stone-400 block uppercase tracking-wider mb-1">Equilíbrio</span>
+						<span class="text-sm font-semibold text-stone-900 font-mono">50 / 50</span>
+					</div>
+					<div class="border border-stone-300/80 bg-stone-50/80 p-4 rounded-sm text-left col-span-2 sm:col-span-1">
+						<span class="text-[10px] text-stone-400 block uppercase tracking-wider mb-1">Garantia</span>
+						<span class="text-sm font-semibold text-stone-900 font-mono">Vitalícia</span>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 4. RELATED PRODUCTS SECTION -->
+		<section class="bg-[#EAEAE5] py-24 md:py-32 border-t border-stone-300">
+			<div class="max-w-[1440px] mx-auto px-6 md:px-24">
+				<div class="mb-14 text-left flex flex-col items-start">
+					<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-stone-200/60 border border-stone-300/80 text-stone-600 text-xs font-mono mb-4">
+						<span class="w-1.5 h-1.5 bg-stone-500 rounded-sm"></span>
+						<span>Coleção 2026</span>
+					</div>
+					<h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-stone-900 leading-[1.1]">
+						Outros Instrumentos de Escrita
+					</h2>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+					{
+						product.related.map((pen) => (
+							<ProductCard
+								id={pen.id}
+								title={pen.title}
+								badgeLeft={pen.badgeLeft}
+								badgeRight={pen.badgeRight}
+								image={pen.image}
+								description={pen.description}
+								pena={pen.pena}
+								material={pen.material}
+								recarga={pen.recarga}
+							/>
+						))
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- 5. NOTIFY ME MODAL (STRICTLY HIDDEN BY DEFAULT, ONLY OPENS ON EXPLICIT BUTTON CLICK) -->
+		<div
+			id="notify-modal"
+			style="display: none;"
+			class="fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+		>
+			<div
+				class="relative w-full max-w-md bg-white border border-stone-300 rounded-sm p-8 shadow-xl text-left"
+				id="notify-modal-card"
+			>
+				<button
+					id="close-modal"
+					class="absolute top-5 right-5 text-stone-400 hover:text-stone-900 transition-colors p-1 cursor-pointer"
+					aria-label="Fechar"
+				>
+					<iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+				</button>
+
+				<div class="w-10 h-10 bg-stone-100 rounded-sm flex items-center justify-center text-stone-900 mb-4">
+					<iconify-icon icon="solar:bell-bold-duotone" class="text-xl"></iconify-icon>
+				</div>
+
+				<h3 class="font-display text-2xl font-medium text-stone-900 mb-1" id="modal-product-title">
+					AVISE-ME
+				</h3>
+				<p class="text-xs font-mono text-stone-500 uppercase tracking-wider mb-6">
+					Notificação de Disponibilidade • Lote Exclusivo
+				</p>
+
+				<form id="notify-form" class="space-y-4">
+					<div>
+						<label for="notify-name" class="block text-xs font-mono uppercase tracking-wider text-stone-500 mb-2">
+							Nome Completo
+						</label>
+						<input
+							type="text"
+							name="name"
+							id="notify-name"
+							required
+							placeholder="Seu nome"
+							class="w-full px-4 py-3 border border-stone-300 rounded-sm bg-stone-50 text-stone-900 text-sm focus:outline-none focus:border-stone-900 focus:bg-white transition-colors"
+						/>
+					</div>
+
+					<div>
+						<label for="notify-phone" class="block text-xs font-mono uppercase tracking-wider text-stone-500 mb-2">
+							Telefone / WhatsApp
+						</label>
+						<input
+							type="tel"
+							name="phone"
+							id="notify-phone"
+							required
+							placeholder="(00) 00000-0000"
+							class="w-full px-4 py-3 border border-stone-300 rounded-sm bg-stone-50 text-stone-900 text-sm focus:outline-none focus:border-stone-900 focus:bg-white transition-colors"
+						/>
+					</div>
+
+					<div>
+						<label for="notify-email" class="block text-xs font-mono uppercase tracking-wider text-stone-500 mb-2">
+							E-mail
+						</label>
+						<input
+							type="email"
+							name="email"
+							id="notify-email"
+							required
+							placeholder="seu@email.com"
+							class="w-full px-4 py-3 border border-stone-300 rounded-sm bg-stone-50 text-stone-900 text-sm focus:outline-none focus:border-stone-900 focus:bg-white transition-colors"
+						/>
+					</div>
+
+					<Button type="submit" variant="primary" size="md" fullWidth={true} class="rounded-sm">
+						CONFIRMAR NOTIFICAÇÃO
+					</Button>
+				</form>
+
+				<div id="modal-success" class="hidden mt-4 p-4 bg-stone-100 border border-stone-200 text-stone-800 text-xs font-mono text-center rounded-sm">
+					✓ Você será avisado no instante em que este lote for liberado!
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- Interactive scripts -->
+	<script is:inline>
+		document.addEventListener('DOMContentLoaded', () => {
+			// Thumbnail switcher
+			const mainImg = document.getElementById('main-product-img');
+			const thumbs = document.querySelectorAll('.thumb-btn');
+
+			thumbs.forEach((btn) => {
+				btn.addEventListener('click', () => {
+					const newSrc = btn.getAttribute('data-img');
+					if (mainImg && newSrc) {
+						mainImg.src = newSrc;
+					}
+					thumbs.forEach((t) => {
+						t.classList.remove('border-stone-900', 'ring-1', 'ring-stone-900');
+						t.classList.add('border-stone-300', 'opacity-60');
+					});
+					btn.classList.remove('border-stone-300', 'opacity-60');
+					btn.classList.add('border-stone-900', 'ring-1', 'ring-stone-900');
+				});
+			});
+
+			// Modal Handler (Strictly hidden until explicitly clicked)
+			const modal = document.getElementById('notify-modal');
+			const modalTitle = document.getElementById('modal-product-title');
+			const closeBtn = document.getElementById('close-modal');
+			const form = document.getElementById('notify-form');
+			const successMsg = document.getElementById('modal-success');
+
+			// Strict initial hidden state
+			if (modal) {
+				modal.style.display = 'none';
+			}
+
+			const openModal = (productName) => {
+				if (!modal) return;
+				if (modalTitle) modalTitle.textContent = productName || 'AVISE-ME';
+				if (successMsg) successMsg.classList.add('hidden');
+				if (form) {
+					form.reset();
+					form.classList.remove('hidden');
+				}
+				modal.style.display = 'flex';
+			};
+
+			const closeModal = () => {
+				if (!modal) return;
+				modal.style.display = 'none';
+			};
+
+			document.querySelectorAll('.notify-btn').forEach((btn) => {
+				btn.addEventListener('click', (e) => {
+					e.preventDefault();
+					const product = btn.getAttribute('data-product');
+					openModal(product);
+				});
+			});
+
+			if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+			if (modal) {
+				modal.addEventListener('click', (e) => {
+					if (e.target === modal) closeModal();
+				});
+			}
+
+			// Auto-format phone input
+			const phoneInput = document.getElementById('notify-phone');
+			if (phoneInput) {
+				phoneInput.addEventListener('input', (e) => {
+					let v = e.target.value.replace(/\D/g, '');
+					if (v.length > 11) v = v.slice(0, 11);
+					if (v.length > 10) {
+						v = v.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+					} else if (v.length > 6) {
+						v = v.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3');
+					} else if (v.length > 2) {
+						v = v.replace(/^(\d{2})(\d{0,5})$/, '($1) $2');
+					} else if (v.length > 0) {
+						v = v.replace(/^(\d*)$/, '($1');
+					}
+					e.target.value = v;
+				});
+			}
+
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+					closeModal();
+				}
+			});
+
+			if (form) {
+				form.addEventListener('submit', (e) => {
+					e.preventDefault();
+					form.classList.add('hidden');
+					if (successMsg) successMsg.classList.remove('hidden');
+					setTimeout(() => {
+						closeModal();
+					}, 2500);
+				});
+			}
+		});
+	</script>
+</Layout>

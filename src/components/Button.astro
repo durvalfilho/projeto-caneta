@@ -1,0 +1,91 @@
+---
+interface Props {
+	href?: string;
+	variant?: 'primary' | 'secondary' | 'outline' | 'dark' | 'beam';
+	size?: 'sm' | 'md' | 'lg';
+	icon?: string;
+	iconPosition?: 'left' | 'right';
+	class?: string;
+	type?: 'button' | 'submit' | 'reset';
+	disabled?: boolean;
+	fullWidth?: boolean;
+	id?: string;
+	[key: string]: any;
+}
+
+const {
+	href,
+	variant = 'primary',
+	size = 'md',
+	icon,
+	iconPosition = 'right',
+	class: className = '',
+	type = 'button',
+	disabled = false,
+	fullWidth = false,
+	id,
+	...rest
+} = Astro.props;
+
+const baseStyles =
+	'group relative inline-flex items-center justify-center font-medium transition-all duration-300 select-none cursor-pointer focus:outline-none';
+
+const hasRoundedClass = className.includes('rounded-') || className.includes('rounded');
+const roundedStyle = hasRoundedClass ? '' : 'rounded-sm';
+
+const sizeStyles = {
+	sm: 'px-4 py-2 text-xs gap-1.5',
+	md: 'px-6 py-3 text-sm gap-2',
+	lg: 'px-8 py-4 text-base gap-2.5',
+};
+
+const variantStyles = {
+	primary:
+		'bg-stone-900 text-white hover:bg-black shadow-md hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]',
+	secondary:
+		'bg-white text-stone-900 border border-stone-300 hover:border-stone-400 hover:bg-stone-50 shadow-sm hover:shadow-md hover:-translate-y-0.5',
+	outline:
+		'bg-transparent text-stone-900 border border-stone-800 hover:bg-stone-900 hover:text-white transition-colors',
+	dark:
+		'bg-black text-white border border-stone-800 hover:border-stone-600 hover:bg-stone-950 shadow-lg',
+	beam:
+		'relative overflow-hidden bg-stone-900 text-white hover:scale-105 transition-transform',
+};
+
+const widthStyle = fullWidth ? 'w-full' : '';
+const disabledStyle = disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
+
+const classes = [
+	baseStyles,
+	sizeStyles[size],
+	roundedStyle,
+	variantStyles[variant],
+	widthStyle,
+	disabledStyle,
+	className,
+];
+---
+
+{
+	href ? (
+		<a href={href} class:list={classes} id={id} {...rest}>
+			{icon && iconPosition === 'left' && (
+				<iconify-icon icon={icon} class="text-lg transition-transform group-hover:-translate-x-0.5" />
+			)}
+			<slot />
+			{icon && iconPosition === 'right' && (
+				<iconify-icon icon={icon} class="text-lg transition-transform group-hover:translate-x-0.5" />
+			)}
+		</a>
+	) : (
+		<button type={type} disabled={disabled} class:list={classes} id={id} {...rest}>
+			{icon && iconPosition === 'left' && (
+				<iconify-icon icon={icon} class="text-lg transition-transform group-hover:-translate-x-0.5" />
+			)}
+			<slot />
+			{icon && iconPosition === 'right' && (
+				<iconify-icon icon={icon} class="text-lg transition-transform group-hover:translate-x-0.5" />
+			)}
+		</button>
+	)
+}
