@@ -1,4 +1,6 @@
 ---
+import Icon from './Icon.astro';
+
 interface Props {
 	class?: string;
 }
@@ -13,7 +15,7 @@ const { class: className } = Astro.props;
 	>
 		<div class="flex items-center gap-2">
 			<div class="w-6 h-6 bg-stone-800 text-stone-300 flex items-center justify-center rounded-sm">
-				<iconify-icon icon="solar:pen-new-square-bold-duotone" class="text-sm"></iconify-icon>
+				<Icon name="solar:pen-new-square-bold-duotone" class="text-sm" />
 			</div>
 			<span class="font-display font-medium tracking-tight text-sm text-stone-300"
 				>ARTOOLS<span class="text-stone-400">.PRO</span></span

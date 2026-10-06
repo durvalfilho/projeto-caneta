@@ -1,4 +1,6 @@
 ---
+import Icon from './Icon.astro';
+
 interface Props {
 	class?: string;
 }
@@ -44,10 +46,10 @@ const navItems = [
 	<div class="max-w-[1440px] mx-auto px-6 py-4 relative flex justify-between items-center z-10">
 		<!-- 1. Minimalist Logo (Icon + Name Only) -->
 		<a href="/" class="flex items-center gap-2.5 group cursor-pointer text-stone-900 hover:text-stone-600 transition-colors">
-			<iconify-icon
-				icon="solar:pen-new-square-linear"
+			<Icon
+				name="solar:pen-new-square-linear"
 				class="text-xl transition-transform duration-300 group-hover:scale-105"
-			></iconify-icon>
+			/>
 			<span class="font-display font-medium tracking-tight text-lg">
 				ARTOOLS
 			</span>
@@ -116,7 +118,7 @@ const navItems = [
 	<!-- Mobile Menu Drawer / Panel -->
 	<div
 		id="mobile-menu"
-		class="md:hidden fixed inset-x-0 bg-[#EAEAE5]/95 backdrop-blur-xl border-b border-stone-300/70 shadow-2xl transition-all duration-300 ease-out opacity-0 pointer-events-none -translate-y-3 z-40 overflow-y-auto"
+		class="md:hidden fixed inset-x-0 bg-[#EAEAE5]/95 backdrop-blur-xl border-b border-stone-300/70 shadow-2xl transition-[opacity,transform] duration-300 ease-out opacity-0 pointer-events-none -translate-y-3 z-40 overflow-y-auto"
 		style="top: var(--navbar-height, 64px); height: calc(100vh - var(--navbar-height, 64px)); height: calc(100dvh - var(--navbar-height, 64px));"
 		aria-hidden="true"
 	>
@@ -187,7 +189,7 @@ const navItems = [
 											: 'bg-stone-200/60 text-stone-500 group-hover:bg-stone-900 group-hover:text-white group-hover:translate-x-0.5',
 									]}
 								>
-									<iconify-icon icon="solar:arrow-right-linear" class="text-sm"></iconify-icon>
+									<Icon name="solar:arrow-right-linear" class="text-sm" />
 								</div>
 							</a>
 						);
@@ -207,7 +209,7 @@ const navItems = [
 						<span class="font-display font-medium text-sm text-white">Explorar Caneta Precision</span>
 					</div>
 					<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-1 transition-transform">
-						<iconify-icon icon="solar:arrow-right-linear" class="text-base text-white"></iconify-icon>
+						<Icon name="solar:arrow-right-linear" class="text-base text-white" />
 					</div>
 				</a>
 

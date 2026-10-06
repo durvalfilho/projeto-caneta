@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Button from '../components/Button.astro';
 import ProductCard from '../components/ProductCard.astro';
+import Icon from '../components/Icon.astro';
 import { Image } from 'astro:assets';
 
 import penRawTitanium from '../assets/pens/pen_raw_titanium.webp';
@@ -311,11 +312,11 @@ const product = {
 					class="absolute top-5 right-5 text-stone-400 hover:text-stone-900 transition-colors p-1 cursor-pointer"
 					aria-label="Fechar"
 				>
-					<iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+					<Icon name="solar:close-circle-linear" class="text-2xl" />
 				</button>
 
 				<div class="w-10 h-10 bg-stone-100 rounded-sm flex items-center justify-center text-stone-900 mb-4">
-					<iconify-icon icon="solar:bell-bold-duotone" class="text-xl"></iconify-icon>
+					<Icon name="solar:bell-bold-duotone" class="text-xl" />
 				</div>
 
 				<h3 class="font-display text-2xl font-medium text-stone-900 mb-1" id="modal-product-title">

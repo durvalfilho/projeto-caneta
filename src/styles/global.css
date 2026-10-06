@@ -1,13 +1,11 @@
 @import "tailwindcss";
+@source not "../../siteantigo";
 
 @theme {
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-display: 'Space Grotesk', sans-serif;
-  --font-luxury: 'Pinyon Script', 'MonteCarlo', 'Italianno', cursive;
-  --font-script: 'Pinyon Script', cursive;
-  --font-cursive: 'Pinyon Script', 'Great Vibes', cursive;
-  --font-serif: 'Playfair Display', 'Cormorant Garamond', serif;
+  --font-luxury: 'Pinyon Script', cursive;
 
   --color-surface-light: #eaeae5;
 

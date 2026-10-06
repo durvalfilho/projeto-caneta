@@ -14,7 +14,8 @@
     "optimize:videos": "node scripts/optimize-videos.mjs"
   },
   "dependencies": {
-    "astro": "^7.2.2"
+    "astro": "^7.2.2",
+    "gsap": "^3.15.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",

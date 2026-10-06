@@ -28,31 +28,33 @@ const {
 		<!-- View Transitions Client Router -->
 		<ClientRouter />
 
-		<!-- Resource Hints & Non-blocking Fonts -->
+		<!-- Resource Hints & Non-blocking Fonts (Streamlined to 4 essential fonts) -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			rel="preload"
+			href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
+		<link
+			rel="preload"
 			as="style"
-			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=Great+Vibes&family=Italianno&family=MonteCarlo&family=Pinyon+Script&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,400;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Pinyon+Script&family=Space+Grotesk:wght@500;700&display=swap"
 		/>
 		<link
 			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=Great+Vibes&family=Italianno&family=MonteCarlo&family=Pinyon+Script&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,400;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Pinyon+Script&family=Space+Grotesk:wght@500;700&display=swap"
 			media="print"
 			onload="this.media='all'"
 		/>
 		<noscript>
 			<link
 				rel="stylesheet"
-				href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=Great+Vibes&family=Italianno&family=MonteCarlo&family=Pinyon+Script&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,400;1,600;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+				href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Pinyon+Script&family=Space+Grotesk:wght@500;700&display=swap"
 			/>
 		</noscript>
-
-		<!-- Defer CDN Dependencies -->
-		<script is:inline defer src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-		<script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-		<script is:inline defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 	</head>
 
 	<body class="antialiased min-h-screen relative selection:bg-stone-800 selection:text-white flex flex-col">

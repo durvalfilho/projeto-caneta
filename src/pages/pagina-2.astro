@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
 import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
 
 import penRawTitanium from '../assets/pens/pen_raw_titanium.webp';
 import penStealthBlack from '../assets/pens/pen_stealth_black.webp';
@@ -206,11 +207,11 @@ const pens = [
 					class="absolute top-5 right-5 text-stone-400 hover:text-stone-900 transition-colors p-1"
 					aria-label="Fechar"
 				>
-					<iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+					<Icon name="solar:close-circle-linear" class="text-2xl" />
 				</button>
 
 				<div class="w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center text-stone-900 mb-4">
-					<iconify-icon icon="solar:bell-bold-duotone" class="text-xl"></iconify-icon>
+					<Icon name="solar:bell-bold-duotone" class="text-xl" />
 				</div>
 
 				<h3 class="font-display text-2xl font-medium text-stone-900 mb-1" id="modal-product-title">

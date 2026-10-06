@@ -1,4 +1,6 @@
 ---
+import Icon from './Icon.astro';
+
 interface Props {
 	href?: string;
 	variant?: 'primary' | 'secondary' | 'outline' | 'dark' | 'beam';
@@ -70,21 +72,21 @@ const classes = [
 	href ? (
 		<a href={href} class:list={classes} id={id} {...rest}>
 			{icon && iconPosition === 'left' && (
-				<iconify-icon icon={icon} class="text-lg transition-transform group-hover:-translate-x-0.5" />
+				<Icon name={icon} class="text-lg transition-transform group-hover:-translate-x-0.5" />
 			)}
 			<slot />
 			{icon && iconPosition === 'right' && (
-				<iconify-icon icon={icon} class="text-lg transition-transform group-hover:translate-x-0.5" />
+				<Icon name={icon} class="text-lg transition-transform group-hover:translate-x-0.5" />
 			)}
 		</a>
 	) : (
 		<button type={type} disabled={disabled} class:list={classes} id={id} {...rest}>
 			{icon && iconPosition === 'left' && (
-				<iconify-icon icon={icon} class="text-lg transition-transform group-hover:-translate-x-0.5" />
+				<Icon name={icon} class="text-lg transition-transform group-hover:-translate-x-0.5" />
 			)}
 			<slot />
 			{icon && iconPosition === 'right' && (
-				<iconify-icon icon={icon} class="text-lg transition-transform group-hover:translate-x-0.5" />
+				<Icon name={icon} class="text-lg transition-transform group-hover:translate-x-0.5" />
 			)}
 		</button>
 	)
