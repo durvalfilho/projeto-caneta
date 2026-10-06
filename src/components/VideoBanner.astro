@@ -21,8 +21,11 @@ const {
 		loop
 		muted
 		playsinline
+		preload="metadata"
 		class="w-full h-full object-cover"
+		aria-label="Vídeo demonstrativo da caneta de precisão Artools"
 	>
 		<source src={src} type="video/mp4" />
+		<track kind="captions" src="data:text/vtt,WEBVTT" label="Sem áudio" default />
 	</video>
 </section>

@@ -35,7 +35,7 @@ import TextType from '../components/TextType.astro';
 					<!-- Badge -->
 					<div class="inline-flex items-center gap-3 mb-4 reveal-up delay-100">
 						<span class="w-2 h-2 bg-stone-900 rounded-full"></span>
-						<span class="text-xs font-mono uppercase tracking-[0.2em] text-stone-500"
+						<span class="text-xs font-mono uppercase tracking-[0.2em] text-stone-600 font-medium"
 							>Precision Series</span
 						>
 					</div>
@@ -51,7 +51,7 @@ import TextType from '../components/TextType.astro';
 
 					<!-- Subtext -->
 					<p
-						class="text-lg md:text-xl text-stone-600 max-w-lg leading-relaxed reveal-up delay-500 mb-8 font-light"
+						class="text-lg md:text-xl text-stone-700 max-w-lg leading-relaxed reveal-up delay-500 mb-8 font-normal"
 					>
 						A Artools Precision Pen redefine o equilíbrio entre peso, fluxo e design. Feita para
 						criadores que exigem perfeição em cada traço.
@@ -92,9 +92,9 @@ import TextType from '../components/TextType.astro';
 
 			<!-- SCROLL HINT -->
 			<div
-				class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 opacity-60 pointer-events-none"
+				class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 opacity-70 pointer-events-none"
 			>
-				<span class="text-[10px] font-mono uppercase tracking-widest text-stone-500"
+				<span class="text-[10px] font-mono uppercase tracking-widest text-stone-600 font-medium"
 					>Scroll to Control</span
 				>
 				<div class="w-px h-8 bg-stone-400 overflow-hidden relative">
@@ -132,8 +132,8 @@ import TextType from '../components/TextType.astro';
 			<!-- Header -->
 			<div class="mb-24 reveal-up relative z-10">
 				<div class="inline-flex items-center gap-2 mb-6">
-					<span class="w-1.5 h-1.5 bg-stone-400 rounded-full"></span>
-					<span class="text-xs font-mono uppercase tracking-[0.2em] text-stone-400">Technology</span>
+					<span class="w-1.5 h-1.5 bg-stone-600 rounded-full"></span>
+					<span class="text-xs font-mono uppercase tracking-[0.2em] text-stone-600 font-medium">Technology</span>
 				</div>
 				<h2
 					class="font-display text-5xl md:text-7xl font-medium tracking-tight leading-none text-stone-900 max-w-4xl mix-blend-darken"
@@ -152,12 +152,12 @@ import TextType from '../components/TextType.astro';
 						loop={true}
 						showCursor={true}
 						cursorCharacter="|"
-						className="text-stone-400"
+						className="text-stone-500"
 						cursorClassName="text-stone-900 font-light"
 						startOnVisible={true}
 					/>
 				</h2>
-				<p class="mt-8 text-lg text-stone-500 max-w-2xl font-light leading-relaxed text-balance">
+				<p class="mt-8 text-lg text-stone-700 max-w-2xl font-normal leading-relaxed text-balance">
 					Nossa arquitetura de fluxo proprietária sincroniza a deposição de tinta em tempo real.
 					Construída sobre um chassi de alumínio aeroespacial usinado em CNC de 5 eixos.
 				</p>
@@ -184,8 +184,10 @@ import TextType from '../components/TextType.astro';
 						<Image
 							src={artoolsTechFeature}
 							alt="Artools Tech Detail"
-							width={640}
-							height={640}
+							width={648}
+							height={486}
+							format="webp"
+							quality={80}
 							loading="lazy"
 							decoding="async"
 							class="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100 mix-blend-multiply"
@@ -405,21 +407,19 @@ import TextType from '../components/TextType.astro';
 				}
 			};
 
-			// 1. Preload inicial prioritário dos primeiros 15 frames para renderização imediata
-			for (let i = 0; i < Math.min(15, frameCount); i++) {
-				loadFrame(i);
-			}
+			// 1. Carregar APENAS o primeiro frame no carregamento inicial prioritário
+			const firstImg = loadFrame(0);
+			firstImg.onload = render;
+			if (firstImg.complete) render();
 
-			// Renderizar o primeiro frame assim que estiver pronto
-			if (images[0]) {
-				images[0].onload = render;
-				if (images[0].complete) render();
-			}
+			// 2. Preload progressivo dos frames restantes após interação ou tempo ocioso
+			let preloadInitiated = false;
+			const startPreload = () => {
+				if (preloadInitiated) return;
+				preloadInitiated = true;
 
-			// 2. Preload progressivo em background dos frames restantes sem travar a rede
-			const preloadRemaining = () => {
-				let nextIndex = 15;
-				const batchSize = 12;
+				let nextIndex = 1;
+				const batchSize = 10;
 				const scheduleNext = () => {
 					if (nextIndex >= frameCount) return;
 					const end = Math.min(nextIndex + batchSize, frameCount);
@@ -428,24 +428,22 @@ import TextType from '../components/TextType.astro';
 					}
 					nextIndex = end;
 					if ('requestIdleCallback' in window) {
-						requestIdleCallback(scheduleNext, { timeout: 150 });
+						requestIdleCallback(scheduleNext, { timeout: 250 });
 					} else {
-						setTimeout(scheduleNext, 50);
+						setTimeout(scheduleNext, 80);
 					}
 				};
 
 				if ('requestIdleCallback' in window) {
-					requestIdleCallback(scheduleNext, { timeout: 150 });
+					requestIdleCallback(scheduleNext, { timeout: 250 });
 				} else {
-					setTimeout(scheduleNext, 50);
+					setTimeout(scheduleNext, 80);
 				}
 			};
 
-			if (document.readyState === 'complete') {
-				preloadRemaining();
-			} else {
-				window.addEventListener('load', preloadRemaining, { once: true });
-			}
+			window.addEventListener('scroll', startPreload, { once: true, passive: true });
+			window.addEventListener('touchstart', startPreload, { once: true, passive: true });
+			setTimeout(startPreload, 2500);
 
 			// Initial Reveal Animation (Hero Text Only)
 			const heroReveals = document.querySelectorAll('.hero-scrub-container .reveal-up');
@@ -459,15 +457,14 @@ import TextType from '../components/TextType.astro';
 			if (typeof gsap !== 'undefined') {
 				gsap.fromTo(
 					canvas,
-					{ opacity: 0, scale: 1.1 },
-					{ opacity: 1, scale: 1, duration: 1.5, ease: 'power3.out' }
+					{ opacity: 0, scale: 1.05 },
+					{ opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' }
 				);
 
-				// Parallax Effects for Hero Text (Blur Out on Scroll)
+				// Parallax Effects for Hero Text (Composited: y e opacity, sem filtro blur)
 				gsap.to('.hero-scrub-container .reveal-up', {
-					y: -60,
+					y: -50,
 					opacity: 0,
-					filter: 'blur(15px)',
 					stagger: 0.05,
 					scrollTrigger: {
 						trigger: '.hero-scrub-container',
@@ -504,16 +501,23 @@ import TextType from '../components/TextType.astro';
 				});
 			}
 
-			// Flashlight Effect listeners
+			// Flashlight Effect listeners (Zero layout thrashing com cache de bounding box)
 			const cards = document.querySelectorAll('.flashlight-card');
 			cards.forEach((card) => {
+				let rect = null;
+				card.addEventListener('mouseenter', () => {
+					rect = card.getBoundingClientRect();
+				}, { passive: true });
 				card.addEventListener('mousemove', (e) => {
-					const rect = card.getBoundingClientRect();
+					if (!rect) rect = card.getBoundingClientRect();
 					const x = e.clientX - rect.left;
 					const y = e.clientY - rect.top;
 					card.style.setProperty('--mouse-x', `${x}px`);
 					card.style.setProperty('--mouse-y', `${y}px`);
-				});
+				}, { passive: true });
+				card.addEventListener('mouseleave', () => {
+					rect = null;
+				}, { passive: true });
 			});
 		};
 
