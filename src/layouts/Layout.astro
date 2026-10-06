@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
 	title?: string;
@@ -23,7 +24,14 @@ const {
 		<link rel="icon" href="/favicon.ico" />
 		<title>{title}</title>
 
-		<!-- Fonts -->
+		<!-- View Transitions Client Router -->
+		<ClientRouter />
+
+		<!-- Resource Hints & Fonts -->
+		<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+		<link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+		<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+		<link rel="dns-prefetch" href="https://code.iconify.design" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
@@ -35,7 +43,7 @@ const {
 		<script is:inline src="https://cdn.tailwindcss.com"></script>
 
 		<!-- Iconify -->
-		<script is:inline src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+		<script is:inline defer src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
 		<!-- GSAP & ScrollTrigger -->
 		<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -234,18 +242,27 @@ const {
 			.animate-float {
 				animation: float 6s ease-in-out infinite;
 			}
+
+			/* View Transitions */
+			::view-transition-old(root),
+			::view-transition-new(root) {
+				animation-duration: 0.25s;
+			}
 		</style>
 	</head>
 
-	<body class="antialiased min-h-screen relative selection:bg-stone-800 selection:text-white">
-		<div class="noise-overlay"></div>
+	<body class="antialiased min-h-screen relative selection:bg-stone-800 selection:text-white flex flex-col">
+		<div class="noise-overlay" transition:persist></div>
 
-		<!-- Header Component -->
-		<Header />
+		<!-- Mantendo o topo do site fixo entre páginas -->
+		<Header transition:persist />
 
-		<slot />
+		<main class="flex-1 w-full" transition:animate="fade">
+			<slot />
+		</main>
 
 		<!-- Footer Component -->
 		<Footer />
 	</body>
 </html>
+

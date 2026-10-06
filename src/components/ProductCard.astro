@@ -1,16 +1,20 @@
 ---
 import Button from './Button.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 
 interface Props {
 	id: string;
 	title: string;
 	badgeLeft?: string;
 	badgeRight?: string;
-	image: string;
+	image: ImageMetadata | string;
 	description: string;
 	pena?: string;
 	material: string;
 	recarga?: string;
+	loading?: 'lazy' | 'eager';
+	fetchpriority?: 'high' | 'low' | 'auto';
 }
 
 const {
@@ -23,6 +27,8 @@ const {
 	pena = 'Aço Inox M',
 	material = 'Alumínio 6061',
 	recarga = 'Rollerball G2',
+	loading = 'lazy',
+	fetchpriority = 'auto',
 } = Astro.props;
 ---
 
@@ -32,11 +38,15 @@ const {
 >
 	<!-- Top Image (Edge-to-Edge Full Width) -->
 	<a href="/produto" class="block relative w-full aspect-[4/3] overflow-hidden bg-stone-100 cursor-pointer">
-		<img
-			src={image}
+		<Image
+			src={image as any}
 			alt={title}
+			width={750}
+			height={750}
 			class="w-full h-full object-cover grayscale contrast-105 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
-			loading="lazy"
+			loading={loading}
+			fetchpriority={fetchpriority}
+			decoding="async"
 		/>
 
 		<!-- Top Left Badge (Black) -->

@@ -7,17 +7,41 @@ const { class: className } = Astro.props;
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 const navItems = [
-	{ label: 'Início', href: '/' },
-	{ label: 'Tecnologia', href: '/#tech-specs' },
-	{ label: 'Catálogo', href: '/pagina-2' },
-	{ label: 'Produto', href: '/produto' },
+	{
+		label: 'Início',
+		href: '/',
+		description: 'Visão geral e design da Precision Pen',
+		number: '01',
+	},
+	{
+		label: 'Tecnologia',
+		href: '/#tech-specs',
+		description: 'Engenharia de precisão e especificações',
+		number: '02',
+	},
+	{
+		label: 'Catálogo',
+		href: '/pagina-2',
+		description: 'Acabamentos e variantes exclusivas',
+		number: '03',
+	},
+	{
+		label: 'Produto',
+		href: '/produto',
+		description: 'Titanium Stealth Minimalist AR-TS01',
+		number: '04',
+	},
 ];
 ---
 
-<!-- NAVBAR -->
-<header class:list={["fixed w-full z-50 top-0 transition-all duration-300", className]} id="navbar">
+<!-- NAVBAR (Persistido via View Transitions para nunca piscar) -->
+<header
+	class:list={["fixed w-full z-50 top-0 transition-all duration-300", className]}
+	id="navbar"
+	transition:persist="navbar"
+>
 	<div class="absolute inset-0 bg-white/70 backdrop-blur-md border-b border-stone-200/50"></div>
-	<div class="max-w-[1440px] mx-auto px-6 py-4 relative flex justify-between items-center">
+	<div class="max-w-[1440px] mx-auto px-6 py-4 relative flex justify-between items-center z-10">
 		<!-- 1. Minimalist Logo (Icon + Name Only) -->
 		<a href="/" class="flex items-center gap-2.5 group cursor-pointer text-stone-900 hover:text-stone-600 transition-colors">
 			<iconify-icon
@@ -29,10 +53,11 @@ const navItems = [
 			</span>
 		</a>
 
-		<!-- 2. Nav Links (With Dynamic Active Page Indicator) -->
+		<!-- 2. Nav Links Desktop (With Dynamic Active Page Indicator) -->
 		<nav
 			id="nav-desktop"
 			class="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest"
+			transition:persist
 		>
 			{
 				navItems.map((item) => {
@@ -60,79 +85,337 @@ const navItems = [
 			}
 		</nav>
 
-		<!-- 3. Mobile Menu Toggle (Cart Removed) -->
+		<!-- 3. Mobile Menu Toggle Button (Architectural Animated Hamburger) -->
 		<div class="md:hidden flex items-center">
 			<button
 				id="mobile-menu-btn"
-				class="text-stone-900 hover:text-stone-600 transition-colors p-1 flex items-center justify-center cursor-pointer"
-				aria-label="Abrir menu"
+				type="button"
+				class="relative w-10 h-10 -mr-2 rounded-full flex flex-col justify-center items-center text-stone-900 hover:text-stone-600 hover:bg-stone-200/50 active:scale-95 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-400"
+				aria-label="Abrir menu de navegação"
+				aria-expanded="false"
+				aria-controls="mobile-menu"
 			>
-				<iconify-icon icon="solar:hamburger-menu-linear" class="text-2xl"></iconify-icon>
+				<span class="sr-only">Abrir menu</span>
+				<div class="w-5 h-4 relative flex flex-col justify-between items-center pointer-events-none">
+					<span
+						id="hamburger-line-1"
+						class="w-5 h-0.5 bg-stone-900 rounded-full origin-center transition-all duration-300 ease-in-out"
+					></span>
+					<span
+						id="hamburger-line-2"
+						class="w-3.5 h-0.5 bg-stone-900 rounded-full origin-right self-end transition-all duration-300 ease-in-out"
+					></span>
+					<span
+						id="hamburger-line-3"
+						class="w-5 h-0.5 bg-stone-900 rounded-full origin-center transition-all duration-300 ease-in-out"
+					></span>
+				</div>
 			</button>
 		</div>
 	</div>
 
-	<!-- Mobile Menu Dropdown -->
+	<!-- Mobile Menu Drawer / Panel -->
 	<div
 		id="mobile-menu"
-		class="hidden md:hidden fixed inset-x-0 top-[65px] bg-[#EAEAE5]/95 backdrop-blur-md border-b border-stone-300 px-6 py-5 transition-all duration-300 shadow-md"
+		class="md:hidden fixed inset-x-0 bg-[#EAEAE5]/95 backdrop-blur-xl border-b border-stone-300/70 shadow-2xl transition-all duration-300 ease-out opacity-0 pointer-events-none -translate-y-3 z-40 overflow-y-auto"
+		style="top: var(--navbar-height, 64px); height: calc(100vh - var(--navbar-height, 64px)); height: calc(100dvh - var(--navbar-height, 64px));"
+		aria-hidden="true"
 	>
-		<nav class="flex flex-col gap-3 text-xs font-mono uppercase tracking-widest">
-			{
-				navItems.map((item) => {
-					const isActive =
-						item.href === '/'
-							? pathname === '/'
-							: item.href === '/#tech-specs'
-								? false
-								: pathname.startsWith(item.href) || (item.href === '/produto' && pathname.startsWith('/pagina-3'));
+		<div class="max-w-[1440px] mx-auto min-h-full px-6 py-6 flex flex-col justify-between">
+			<!-- Navigation Links -->
+			<nav class="flex flex-col gap-2 pt-1">
+				<div class="text-[10px] font-mono uppercase tracking-[0.2em] text-stone-400 mb-2 px-1">
+					Navegação Principal
+				</div>
+				{
+					navItems.map((item) => {
+						const isActive =
+							item.href === '/'
+								? pathname === '/'
+								: item.href === '/#tech-specs'
+									? false
+									: pathname.startsWith(item.href) || (item.href === '/produto' && pathname.startsWith('/pagina-3'));
 
-					return (
-						<a
-							href={item.href}
-							class:list={[
-								'py-2 transition-colors flex items-center justify-between',
-								isActive
-									? 'text-stone-900 font-semibold border-b border-stone-900'
-									: 'text-stone-500 hover:text-stone-900 border-b border-transparent',
-							]}
-						>
-							<span>{item.label}</span>
-							{isActive && <span class="w-1.5 h-1.5 bg-stone-900 rounded-sm"></span>}
-						</a>
-					);
-				})
-			}
-		</nav>
+						return (
+							<a
+								href={item.href}
+								class:list={[
+									'nav-mobile-link group relative flex items-center justify-between p-4 rounded-xl transition-all duration-200 border',
+									isActive
+										? 'bg-stone-900/[0.05] border-stone-300/80 shadow-xs'
+										: 'border-transparent hover:bg-stone-900/[0.03] hover:border-stone-200/60 active:bg-stone-900/[0.06]',
+								]}
+								data-nav-link
+								data-href={item.href}
+							>
+								<div class="flex items-start gap-3.5">
+									<span
+										class:list={[
+											'nav-num font-mono text-xs pt-0.5 transition-colors duration-200',
+											isActive ? 'text-stone-900 font-semibold' : 'text-stone-400 group-hover:text-stone-700',
+										]}
+									>
+										{item.number}
+									</span>
+									<div>
+										<div class="flex items-center gap-2">
+											<span
+												class:list={[
+													'nav-title font-display text-xl tracking-tight transition-colors duration-200',
+													isActive ? 'font-semibold text-stone-900' : 'font-normal text-stone-800 group-hover:text-stone-900',
+												]}
+											>
+												{item.label}
+											</span>
+											<span
+												class="nav-badge inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-mono uppercase tracking-widest bg-stone-900 text-white font-medium"
+												style={isActive ? '' : 'display: none;'}
+											>
+												Atual
+											</span>
+										</div>
+										<p class="text-xs text-stone-500 font-sans mt-0.5 font-light line-clamp-1">
+											{item.description}
+										</p>
+									</div>
+								</div>
+
+								<div
+									class:list={[
+										'nav-arrow w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 shrink-0 ml-2',
+										isActive
+											? 'bg-stone-900 text-white'
+											: 'bg-stone-200/60 text-stone-500 group-hover:bg-stone-900 group-hover:text-white group-hover:translate-x-0.5',
+									]}
+								>
+									<iconify-icon icon="solar:arrow-right-linear" class="text-sm"></iconify-icon>
+								</div>
+							</a>
+						);
+					})
+				}
+			</nav>
+
+			<!-- Bottom Section / CTA & Metadata -->
+			<div class="mt-8 pt-6 flex flex-col gap-4 border-t border-stone-300/60">
+				<a
+					href="/produto"
+					data-nav-link
+					class="group w-full py-3.5 px-5 bg-stone-900 hover:bg-stone-800 active:bg-stone-950 text-white rounded-xl shadow-md transition-all flex items-center justify-between active:scale-[0.99]"
+				>
+					<div class="flex flex-col items-start">
+						<span class="text-[10px] font-mono uppercase tracking-widest text-stone-400">Edição Limitada</span>
+						<span class="font-display font-medium text-sm text-white">Explorar Caneta Precision</span>
+					</div>
+					<div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+						<iconify-icon icon="solar:arrow-right-linear" class="text-base text-white"></iconify-icon>
+					</div>
+				</a>
+
+				<div class="flex items-center justify-between text-[11px] font-mono text-stone-500 px-1 pt-1">
+					<div class="flex items-center gap-2">
+						<span class="relative flex h-2 w-2">
+							<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+							<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+						</span>
+						<span class="tracking-wider uppercase">Artools Precision Series</span>
+					</div>
+					<span class="tracking-widest">Ed. 2026</span>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<script is:inline>
-		document.addEventListener('DOMContentLoaded', () => {
+		const initNavbar = () => {
+			const navbar = document.getElementById('navbar');
 			const menuBtn = document.getElementById('mobile-menu-btn');
 			const mobileMenu = document.getElementById('mobile-menu');
-			if (menuBtn && mobileMenu) {
-				menuBtn.addEventListener('click', () => {
-					mobileMenu.classList.toggle('hidden');
+			const line1 = document.getElementById('hamburger-line-1');
+			const line2 = document.getElementById('hamburger-line-2');
+			const line3 = document.getElementById('hamburger-line-3');
+			const logoLink = navbar?.querySelector('a[href="/"]');
+
+			if (!navbar || !menuBtn || !mobileMenu) return;
+
+			let isOpen = false;
+
+			const updateNavbarHeight = () => {
+				const height = navbar.offsetHeight;
+				document.documentElement.style.setProperty('--navbar-height', `${height}px`);
+			};
+
+			const openMenu = () => {
+				if (isOpen) return;
+				isOpen = true;
+				updateNavbarHeight();
+
+				menuBtn.setAttribute('aria-expanded', 'true');
+				menuBtn.setAttribute('aria-label', 'Fechar menu de navegação');
+				mobileMenu.setAttribute('aria-hidden', 'false');
+
+				// Menu animation
+				mobileMenu.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-3');
+				mobileMenu.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+
+				// Hamburger morph into X
+				line1?.classList.add('translate-y-[7px]', 'rotate-45');
+				line2?.classList.add('opacity-0', 'translate-x-2');
+				line3?.classList.add('-translate-y-[7px]', '-rotate-45');
+
+				// Lock body scroll
+				document.body.style.overflow = 'hidden';
+			};
+
+			const closeMenu = () => {
+				if (!isOpen) return;
+				isOpen = false;
+
+				menuBtn.setAttribute('aria-expanded', 'false');
+				menuBtn.setAttribute('aria-label', 'Abrir menu de navegação');
+				mobileMenu.setAttribute('aria-hidden', 'true');
+
+				// Menu animation
+				mobileMenu.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+				mobileMenu.classList.add('opacity-0', 'pointer-events-none', '-translate-y-3');
+
+				// Hamburger revert
+				line1?.classList.remove('translate-y-[7px]', 'rotate-45');
+				line2?.classList.remove('opacity-0', 'translate-x-2');
+				line3?.classList.remove('-translate-y-[7px]', '-rotate-45');
+
+				// Unlock body scroll
+				document.body.style.overflow = '';
+			};
+
+			// Active links updater for both desktop and mobile
+			const updateActiveLinks = () => {
+				const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+
+				// 1. Desktop Links
+				document.querySelectorAll('#nav-desktop a').forEach((link) => {
+					const href = link.getAttribute('href')?.replace(/\/$/, '') || '';
+					if (!href) return;
+					const isHome = href === '' || href === '/';
+					const isMatch = isHome
+						? currentPath === '/'
+						: href.startsWith('/#')
+							? false
+							: currentPath.startsWith(href) || (href === '/produto' && currentPath.startsWith('/pagina-3'));
+
+					if (isMatch) {
+						link.classList.remove('text-stone-500', 'border-transparent');
+						link.classList.add('text-stone-900', 'font-semibold', 'border-stone-900');
+					} else {
+						link.classList.add('text-stone-500', 'border-transparent');
+						link.classList.remove('text-stone-900', 'font-semibold', 'border-stone-900');
+					}
+				});
+
+				// 2. Mobile Links
+				document.querySelectorAll('#mobile-menu .nav-mobile-link').forEach((link) => {
+					const href = (link.getAttribute('data-href') || link.getAttribute('href'))?.replace(/\/$/, '') || '';
+					if (!href) return;
+					const isHome = href === '' || href === '/';
+					const isMatch = isHome
+						? currentPath === '/'
+						: href.startsWith('/#')
+							? false
+							: currentPath.startsWith(href) || (href === '/produto' && currentPath.startsWith('/pagina-3'));
+
+					const numEl = link.querySelector('.nav-num');
+					const titleEl = link.querySelector('.nav-title');
+					const badgeEl = link.querySelector('.nav-badge');
+					const arrowEl = link.querySelector('.nav-arrow');
+
+					if (isMatch) {
+						link.classList.add('bg-stone-900/[0.05]', 'border-stone-300/80', 'shadow-xs');
+						link.classList.remove('border-transparent');
+						numEl?.classList.add('text-stone-900', 'font-semibold');
+						numEl?.classList.remove('text-stone-400');
+						titleEl?.classList.add('font-semibold', 'text-stone-900');
+						titleEl?.classList.remove('font-normal');
+						if (badgeEl) badgeEl.style.display = 'inline-flex';
+						arrowEl?.classList.add('bg-stone-900', 'text-white');
+						arrowEl?.classList.remove('bg-stone-200/60', 'text-stone-500');
+					} else {
+						link.classList.remove('bg-stone-900/[0.05]', 'border-stone-300/80', 'shadow-xs');
+						link.classList.add('border-transparent');
+						numEl?.classList.remove('text-stone-900', 'font-semibold');
+						numEl?.classList.add('text-stone-400');
+						titleEl?.classList.remove('font-semibold', 'text-stone-900');
+						titleEl?.classList.add('font-normal');
+						if (badgeEl) badgeEl.style.display = 'none';
+						arrowEl?.classList.remove('bg-stone-900', 'text-white');
+						arrowEl?.classList.add('bg-stone-200/60', 'text-stone-500');
+					}
+				});
+			};
+
+			// One-time event listeners setup (since Header is persistent)
+			if (!navbar.dataset.navInitialized) {
+				navbar.dataset.navInitialized = 'true';
+
+				menuBtn.onclick = (e) => {
+					e.stopPropagation();
+					if (isOpen) {
+						closeMenu();
+					} else {
+						openMenu();
+					}
+				};
+
+				logoLink?.addEventListener('click', () => {
+					if (isOpen) closeMenu();
+				});
+
+				mobileMenu.querySelectorAll('[data-nav-link]').forEach((link) => {
+					link.addEventListener('click', (e) => {
+						const href = link.getAttribute('href');
+						closeMenu();
+
+						// If on homepage and clicking tech-specs anchor, smooth scroll
+						if (href === '/#tech-specs' && (window.location.pathname === '/' || window.location.pathname === '')) {
+							const techSection = document.getElementById('tech-specs');
+							if (techSection) {
+								e.preventDefault();
+								techSection.scrollIntoView({ behavior: 'smooth' });
+								history.pushState(null, '', '#tech-specs');
+							}
+						}
+					});
+				});
+
+				document.addEventListener('keydown', (e) => {
+					if (e.key === 'Escape' && isOpen) {
+						closeMenu();
+					}
+				});
+
+				window.addEventListener('resize', () => {
+					updateNavbarHeight();
+					if (window.innerWidth >= 768 && isOpen) {
+						closeMenu();
+					}
+				});
+
+				// Close menu on page transitions
+				document.addEventListener('astro:before-preparation', () => {
+					closeMenu();
 				});
 			}
 
-			// Ensure client-side match for active navigation indicator
-			const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
-			document.querySelectorAll('#nav-desktop a, #mobile-menu a').forEach((link) => {
-				const href = link.getAttribute('href')?.replace(/\/$/, '') || '';
-				if (!href) return;
-				const isHome = href === '' || href === '/';
-				const isMatch = isHome
-					? currentPath === '/'
-					: href.startsWith('/#')
-						? false
-						: currentPath.startsWith(href) || (href === '/produto' && currentPath.startsWith('/pagina-3'));
+			// Run on every page change
+			closeMenu();
+			updateNavbarHeight();
+			updateActiveLinks();
+		};
 
-				if (isMatch) {
-					link.classList.remove('text-stone-500', 'border-transparent');
-					link.classList.add('text-stone-900', 'font-semibold', 'border-stone-900');
-				}
-			});
-		});
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initNavbar);
+		} else {
+			initNavbar();
+		}
+		document.addEventListener('astro:page-load', initNavbar);
 	</script>
 </header>

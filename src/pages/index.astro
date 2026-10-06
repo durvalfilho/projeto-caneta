@@ -4,11 +4,14 @@ import ExperienceCard from '../components/ExperienceCard.astro';
 import MarqueeSection from '../components/MarqueeSection.astro';
 import VideoBanner from '../components/VideoBanner.astro';
 import TechSpecsTable from '../components/TechSpecsTable.astro';
+import { Image } from 'astro:assets';
+import artoolsTechFeature from '../assets/raw_files/artools_tech_feature.png';
+import TextType from '../components/TextType.astro';
 ---
 
 <Layout>
 	<!-- HERO SECTION -->
-	<main class="hero-scrub-container relative bg-[#EAEAE5]">
+	<div class="hero-scrub-container relative bg-[#EAEAE5]">
 		<div class="sticky top-0 h-screen w-full overflow-hidden">
 			<!-- VIDEO CENTERPIECE (Canvas Background) -->
 			<div class="absolute inset-0 z-0 flex items-center justify-center bg-stone-100">
@@ -56,14 +59,7 @@ import TechSpecsTable from '../components/TechSpecsTable.astro';
 
 					<!-- Buttons -->
 					<div class="flex flex-wrap gap-4 reveal-up delay-700">
-						<!-- Black Pill Button -->
-						<button
-							class="group relative px-8 py-4 bg-stone-900 text-white rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-						>
-							<span class="relative z-10 text-sm font-medium tracking-wide">Comprar Agora</span>
-						</button>
-
-						<!-- White Pill Button -->
+						<!-- White Pill Button (Explorar) -->
 						<a
 							href="#tech-specs"
 							class="group px-8 py-4 bg-white text-stone-900 rounded-full shadow-md hover:shadow-lg border border-transparent hover:border-stone-200 transition-all hover:-translate-y-1 flex items-center gap-2"
@@ -73,6 +69,14 @@ import TechSpecsTable from '../components/TechSpecsTable.astro';
 								icon="solar:arrow-down-linear"
 								class="group-hover:translate-y-0.5 transition-transform"
 							></iconify-icon>
+						</a>
+
+						<!-- Black Pill Button (Saiba Mais) -->
+						<a
+							href="/produto"
+							class="group relative px-8 py-4 bg-stone-900 text-white rounded-full overflow-hidden shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 flex items-center justify-center"
+						>
+							<span class="relative z-10 text-sm font-medium tracking-wide">Saiba Mais</span>
 						</a>
 					</div>
 				</div>
@@ -104,7 +108,7 @@ import TechSpecsTable from '../components/TechSpecsTable.astro';
 			>
 			</div>
 		</div>
-	</main>
+	</div>
 
 	<!-- 2. TECH SPECS SECTION (LIGHT) -->
 	<section
@@ -135,7 +139,23 @@ import TechSpecsTable from '../components/TechSpecsTable.astro';
 					class="font-display text-5xl md:text-7xl font-medium tracking-tight leading-none text-stone-900 max-w-4xl mix-blend-darken"
 				>
 					Engenharia Suíça.<br />
-					<span class="text-stone-400">Precisão Molecular.</span>
+					<TextType
+						text={[
+							'Precisão Molecular.',
+							'Caligrafia Perfeita.',
+							'Zero Fricção.',
+							'Design Atemporal.',
+						]}
+						typingSpeed={60}
+						pauseDuration={2200}
+						deletingSpeed={32}
+						loop={true}
+						showCursor={true}
+						cursorCharacter="|"
+						className="text-stone-400"
+						cursorClassName="text-stone-900 font-light"
+						startOnVisible={true}
+					/>
 				</h2>
 				<p class="mt-8 text-lg text-stone-500 max-w-2xl font-light leading-relaxed text-balance">
 					Nossa arquitetura de fluxo proprietária sincroniza a deposição de tinta em tempo real.
@@ -161,9 +181,13 @@ import TechSpecsTable from '../components/TechSpecsTable.astro';
 						>
 						</div>
 
-						<img
-							src="/assets/raw_files/artools_tech_feature.png"
+						<Image
+							src={artoolsTechFeature}
 							alt="Artools Tech Detail"
+							width={640}
+							height={640}
+							loading="lazy"
+							decoding="async"
 							class="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100 mix-blend-multiply"
 						/>
 
@@ -344,36 +368,83 @@ import TechSpecsTable from '../components/TechSpecsTable.astro';
 			// Configuration
 			const frameCount = 192;
 			const currentFrame = { index: 0 };
-			const images = [];
+			const images = new Array(frameCount);
 
-			// Preload Images
-			const preloadImages = () => {
-				for (let i = 1; i <= frameCount; i++) {
-					const img = new Image();
-					const frameNumber = i.toString().padStart(4, '0');
-					img.src = `/assets/video_frames/frame_${frameNumber}.jpg`;
-					images.push(img);
-				}
+			const getFrameUrl = (i) => {
+				const frameNumber = (i + 1).toString().padStart(4, '0');
+				return `/assets/video_frames/frame_${frameNumber}.webp`;
+			};
+
+			const loadFrame = (index) => {
+				if (images[index]) return images[index];
+				const img = new Image();
+				img.decoding = 'async';
+				img.src = getFrameUrl(index);
+				images[index] = img;
+				return img;
 			};
 
 			// Render function
 			const render = () => {
-				const frameIndex = Math.min(Math.floor(currentFrame.index), frameCount - 1);
-				const img = images[frameIndex];
+				const frameIndex = Math.min(Math.max(0, Math.floor(currentFrame.index)), frameCount - 1);
+				let img = images[frameIndex];
 
-				if (img && img.complete) {
+				if (!img) {
+					img = loadFrame(frameIndex);
+					img.onload = () => {
+						if (Math.floor(currentFrame.index) === frameIndex) {
+							context.clearRect(0, 0, canvas.width, canvas.height);
+							context.drawImage(img, 0, 0, canvas.width, canvas.height);
+						}
+					};
+				}
+
+				if (img && img.complete && img.naturalWidth > 0) {
 					context.clearRect(0, 0, canvas.width, canvas.height);
 					context.drawImage(img, 0, 0, canvas.width, canvas.height);
 				}
 			};
 
-			// Start Preloading
-			preloadImages();
+			// 1. Preload inicial prioritário dos primeiros 15 frames para renderização imediata
+			for (let i = 0; i < Math.min(15, frameCount); i++) {
+				loadFrame(i);
+			}
 
-			// Initial frame load
+			// Renderizar o primeiro frame assim que estiver pronto
 			if (images[0]) {
 				images[0].onload = render;
 				if (images[0].complete) render();
+			}
+
+			// 2. Preload progressivo em background dos frames restantes sem travar a rede
+			const preloadRemaining = () => {
+				let nextIndex = 15;
+				const batchSize = 12;
+				const scheduleNext = () => {
+					if (nextIndex >= frameCount) return;
+					const end = Math.min(nextIndex + batchSize, frameCount);
+					for (let i = nextIndex; i < end; i++) {
+						loadFrame(i);
+					}
+					nextIndex = end;
+					if ('requestIdleCallback' in window) {
+						requestIdleCallback(scheduleNext, { timeout: 150 });
+					} else {
+						setTimeout(scheduleNext, 50);
+					}
+				};
+
+				if ('requestIdleCallback' in window) {
+					requestIdleCallback(scheduleNext, { timeout: 150 });
+				} else {
+					setTimeout(scheduleNext, 50);
+				}
+			};
+
+			if (document.readyState === 'complete') {
+				preloadRemaining();
+			} else {
+				window.addEventListener('load', preloadRemaining, { once: true });
 			}
 
 			// Initial Reveal Animation (Hero Text Only)
@@ -451,5 +522,6 @@ import TechSpecsTable from '../components/TechSpecsTable.astro';
 		} else {
 			initHero();
 		}
+		document.addEventListener('astro:page-load', initHero);
 	</script>
 </Layout>

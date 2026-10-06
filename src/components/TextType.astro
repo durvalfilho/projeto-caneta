@@ -1,0 +1,283 @@
+---
+interface Props {
+	text: string | string[];
+	as?: string;
+	typingSpeed?: number;
+	initialDelay?: number;
+	pauseDuration?: number;
+	deletingSpeed?: number;
+	loop?: boolean;
+	className?: string;
+	showCursor?: boolean;
+	hideCursorWhileTyping?: boolean;
+	cursorCharacter?: string;
+	cursorClassName?: string;
+	cursorBlinkDuration?: number;
+	textColors?: string[];
+	variableSpeed?: { min: number; max: number };
+	startOnVisible?: boolean;
+	reverseMode?: boolean;
+	id?: string;
+}
+
+const {
+	text,
+	as: Component = 'span',
+	typingSpeed = 50,
+	initialDelay = 0,
+	pauseDuration = 2000,
+	deletingSpeed = 30,
+	loop = true,
+	className = '',
+	showCursor = true,
+	hideCursorWhileTyping = false,
+	cursorCharacter = '|',
+	cursorClassName = '',
+	cursorBlinkDuration = 0.5,
+	textColors = [],
+	variableSpeed,
+	startOnVisible = true,
+	reverseMode = false,
+	id = `text-type-${Math.random().toString(36).substring(2, 9)}`,
+} = Astro.props;
+
+const textArray = Array.isArray(text) ? text : [text];
+---
+
+<Component
+	id={id}
+	class:list={['text-type', className]}
+	data-text-array={JSON.stringify(textArray)}
+	data-typing-speed={typingSpeed}
+	data-initial-delay={initialDelay}
+	data-pause-duration={pauseDuration}
+	data-deleting-speed={deletingSpeed}
+	data-loop={String(loop)}
+	data-show-cursor={String(showCursor)}
+	data-hide-cursor-while-typing={String(hideCursorWhileTyping)}
+	data-cursor-char={cursorCharacter}
+	data-cursor-blink-duration={cursorBlinkDuration}
+	data-text-colors={JSON.stringify(textColors)}
+	data-variable-speed={variableSpeed ? JSON.stringify(variableSpeed) : ''}
+	data-start-on-visible={String(startOnVisible)}
+	data-reverse-mode={String(reverseMode)}
+>
+	<span class="text-type__content"></span>{
+		showCursor && (
+			<span class:list={['text-type__cursor', cursorClassName]}>{cursorCharacter}</span>
+		)
+	}
+</Component>
+
+<style>
+	.text-type {
+		display: inline-block;
+		white-space: pre-wrap;
+	}
+
+	.text-type__cursor {
+		margin-left: 0.15rem;
+		display: inline-block;
+		opacity: 1;
+		font-weight: 300;
+		vertical-align: baseline;
+	}
+
+	.text-type__cursor--hidden {
+		display: none !important;
+	}
+
+	@keyframes textTypeBlink {
+		0%, 100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+	}
+
+	.text-type__cursor--blink-css {
+		animation: textTypeBlink 0.9s infinite ease-in-out;
+	}
+</style>
+
+<script is:inline>
+	const initTextTypeInstances = () => {
+		const elements = document.querySelectorAll('.text-type');
+
+		elements.forEach((el) => {
+			if (el.dataset.textTypeInitialized === 'true') return;
+			el.dataset.textTypeInitialized = 'true';
+
+			const contentEl = el.querySelector('.text-type__content');
+			const cursorEl = el.querySelector('.text-type__cursor');
+			if (!contentEl) return;
+
+			let textArray = [];
+			try {
+				textArray = JSON.parse(el.dataset.textArray || '[]');
+			} catch {
+				textArray = [el.dataset.textArray || ''];
+			}
+			if (textArray.length === 0) return;
+
+			const typingSpeed = Number(el.dataset.typingSpeed) || 50;
+			const initialDelay = Number(el.dataset.initialDelay) || 0;
+			const pauseDuration = Number(el.dataset.pauseDuration) || 2000;
+			const deletingSpeed = Number(el.dataset.deletingSpeed) || 30;
+			const loop = el.dataset.loop === 'true';
+			const showCursor = el.dataset.showCursor === 'true';
+			const hideCursorWhileTyping = el.dataset.hideCursorWhileTyping === 'true';
+			const cursorBlinkDuration = Number(el.dataset.cursorBlinkDuration) || 0.5;
+			const startOnVisible = el.dataset.startOnVisible === 'true';
+			const reverseMode = el.dataset.reverseMode === 'true';
+
+			let textColors = [];
+			try {
+				textColors = JSON.parse(el.dataset.textColors || '[]');
+			} catch {
+				textColors = [];
+			}
+
+			let variableSpeed = null;
+			if (el.dataset.variableSpeed) {
+				try {
+					variableSpeed = JSON.parse(el.dataset.variableSpeed);
+				} catch {}
+			}
+
+			// 1. Cursor Blinking with GSAP (fallback to CSS keyframes)
+			if (showCursor && cursorEl) {
+				if (typeof gsap !== 'undefined') {
+					gsap.set(cursorEl, { opacity: 1 });
+					gsap.to(cursorEl, {
+						opacity: 0,
+						duration: cursorBlinkDuration,
+						repeat: -1,
+						yoyo: true,
+						ease: 'power2.inOut',
+					});
+				} else {
+					cursorEl.classList.add('text-type__cursor--blink-css');
+				}
+			}
+
+			let displayedText = '';
+			let currentCharIndex = 0;
+			let currentTextIndex = 0;
+			let isDeleting = false;
+			let timeoutId = null;
+
+			const getRandomSpeed = () => {
+				if (!variableSpeed) return typingSpeed;
+				const { min, max } = variableSpeed;
+				return Math.random() * (max - min) + min;
+			};
+
+			const updateTextColor = () => {
+				if (textColors.length > 0) {
+					contentEl.style.color = textColors[currentTextIndex % textColors.length];
+				}
+			};
+
+			const updateCursorVisibility = () => {
+				if (!cursorEl || !hideCursorWhileTyping) return;
+				const currentSentence = textArray[currentTextIndex] || '';
+				const isTyping = currentCharIndex < currentSentence.length || isDeleting;
+				if (isTyping) {
+					cursorEl.classList.add('text-type__cursor--hidden');
+				} else {
+					cursorEl.classList.remove('text-type__cursor--hidden');
+				}
+			};
+
+			const executeTypingAnimation = () => {
+				const currentSentence = textArray[currentTextIndex] || '';
+				const processedText = reverseMode
+					? currentSentence.split('').reverse().join('')
+					: currentSentence;
+
+				updateTextColor();
+
+				if (isDeleting) {
+					if (displayedText === '') {
+						isDeleting = false;
+						if (currentTextIndex === textArray.length - 1 && !loop) {
+							updateCursorVisibility();
+							return;
+						}
+						currentTextIndex = (currentTextIndex + 1) % textArray.length;
+						currentCharIndex = 0;
+						timeoutId = setTimeout(executeTypingAnimation, pauseDuration);
+					} else {
+						displayedText = displayedText.slice(0, -1);
+						contentEl.textContent = displayedText;
+						updateCursorVisibility();
+						timeoutId = setTimeout(executeTypingAnimation, deletingSpeed);
+					}
+				} else {
+					if (currentCharIndex < processedText.length) {
+						displayedText += processedText[currentCharIndex];
+						currentCharIndex++;
+						contentEl.textContent = displayedText;
+						updateCursorVisibility();
+						timeoutId = setTimeout(
+							executeTypingAnimation,
+							variableSpeed ? getRandomSpeed() : typingSpeed
+						);
+					} else {
+						if (!loop && currentTextIndex === textArray.length - 1) {
+							updateCursorVisibility();
+							return;
+						}
+						timeoutId = setTimeout(() => {
+							isDeleting = true;
+							executeTypingAnimation();
+						}, pauseDuration);
+					}
+				}
+			};
+
+			const startAnimation = () => {
+				if (initialDelay > 0) {
+					timeoutId = setTimeout(executeTypingAnimation, initialDelay);
+				} else {
+					executeTypingAnimation();
+				}
+			};
+
+			if (startOnVisible && 'IntersectionObserver' in window) {
+				const observer = new IntersectionObserver(
+					(entries) => {
+						entries.forEach((entry) => {
+							if (entry.isIntersecting) {
+								observer.disconnect();
+								startAnimation();
+							}
+						});
+					},
+					{ threshold: 0.1 }
+				);
+				observer.observe(el);
+			} else {
+				startAnimation();
+			}
+
+			// Cleanup on View Transition swap
+			document.addEventListener(
+				'astro:before-swap',
+				() => {
+					if (timeoutId) clearTimeout(timeoutId);
+				},
+				{ once: true }
+			);
+		});
+	};
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initTextTypeInstances);
+	} else {
+		initTextTypeInstances();
+	}
+	document.addEventListener('astro:page-load', initTextTypeInstances);
+</script>
