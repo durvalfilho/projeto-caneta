@@ -118,8 +118,7 @@ const navItems = [
 	<!-- Mobile Menu Drawer / Panel -->
 	<div
 		id="mobile-menu"
-		class="md:hidden fixed inset-x-0 bg-[#EAEAE5]/95 backdrop-blur-xl border-b border-stone-300/70 shadow-2xl transition-[opacity,transform] duration-300 ease-out opacity-0 pointer-events-none -translate-y-3 z-40 overflow-y-auto"
-		style="top: var(--navbar-height, 64px); height: calc(100vh - var(--navbar-height, 64px)); height: calc(100dvh - var(--navbar-height, 64px));"
+		class="md:hidden fixed inset-x-0 top-16 h-[calc(100vh-4rem)] h-[calc(100dvh-4rem)] bg-[#EAEAE5]/95 backdrop-blur-xl border-b border-stone-300/70 shadow-2xl transition-[opacity,transform] duration-300 ease-out opacity-0 pointer-events-none -translate-y-3 z-40 overflow-y-auto"
 		aria-hidden="true"
 	>
 		<div class="max-w-[1440px] mx-auto min-h-full px-6 py-6 flex flex-col justify-between">
@@ -228,7 +227,7 @@ const navItems = [
 	</div>
 
 	<script is:inline>
-		const initNavbar = () => {
+		const initNavbar = (isNavigation = false) => {
 			const navbar = document.getElementById('navbar');
 			const menuBtn = document.getElementById('mobile-menu-btn');
 			const mobileMenu = document.getElementById('mobile-menu');
@@ -241,14 +240,8 @@ const navItems = [
 
 			const isMenuOpen = () => navbar.dataset.menuOpen === 'true';
 
-			const updateNavbarHeight = () => {
-				const height = navbar.offsetHeight;
-				document.documentElement.style.setProperty('--navbar-height', `${height}px`);
-			};
-
 			const openMenu = () => {
 				navbar.dataset.menuOpen = 'true';
-				updateNavbarHeight();
 
 				menuBtn.setAttribute('aria-expanded', 'true');
 				menuBtn.setAttribute('aria-label', 'Fechar menu de navegação');
@@ -392,11 +385,10 @@ const navItems = [
 				});
 
 				window.addEventListener('resize', () => {
-					updateNavbarHeight();
 					if (window.innerWidth >= 768 && isMenuOpen()) {
 						closeMenu();
 					}
-				});
+				}, { passive: true });
 
 				// Close menu on page transitions
 				document.addEventListener('astro:before-preparation', () => {
@@ -409,15 +401,16 @@ const navItems = [
 
 			// Run on every page change
 			closeMenu();
-			updateNavbarHeight();
-			updateActiveLinks();
+			if (isNavigation) {
+				updateActiveLinks();
+			}
 		};
 
 		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', initNavbar);
+			document.addEventListener('DOMContentLoaded', () => initNavbar(false));
 		} else {
-			initNavbar();
+			initNavbar(false);
 		}
-		document.addEventListener('astro:page-load', initNavbar);
+		document.addEventListener('astro:page-load', () => initNavbar(true));
 	</script>
 </header>

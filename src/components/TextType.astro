@@ -146,20 +146,9 @@ const textArray = Array.isArray(text) ? text : [text];
 				} catch {}
 			}
 
-			// 1. Cursor Blinking with GSAP (fallback to CSS keyframes)
+			// 1. Cursor Blinking with CSS keyframes (composited, zero main thread overhead)
 			if (showCursor && cursorEl) {
-				if (typeof gsap !== 'undefined') {
-					gsap.set(cursorEl, { opacity: 1 });
-					gsap.to(cursorEl, {
-						opacity: 0,
-						duration: cursorBlinkDuration,
-						repeat: -1,
-						yoyo: true,
-						ease: 'power2.inOut',
-					});
-				} else {
-					cursorEl.classList.add('text-type__cursor--blink-css');
-				}
+				cursorEl.classList.add('text-type__cursor--blink-css');
 			}
 
 			let displayedText = '';

@@ -169,8 +169,53 @@ body {
   animation: float 6s ease-in-out infinite;
 }
 
+/* Canvas Intro Animation */
+@keyframes heroCanvasFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero-canvas-anim {
+  animation: heroCanvasFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hero Headline (Immediate paint for optimal LCP without artificial opacity delay) */
+@keyframes heroTextReveal {
+  from {
+    transform: translateY(8px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.reveal-hero {
+  opacity: 1;
+  transform: translateY(0);
+  animation: heroTextReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Decorative Watermark (Pure CSS pseudo-element for 100% accessibility compliance) */
+.watermark-precision::before {
+  content: 'PRECISION';
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15rem;
+  line-height: 1;
+  color: #1c1917;
+  display: block;
+}
+
 /* View Transitions */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 0.25s;
 }
+
+
