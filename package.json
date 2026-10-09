@@ -14,6 +14,7 @@
     "optimize:videos": "node scripts/optimize-videos.mjs"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.2.2",
     "gsap": "^3.15.0"
   },

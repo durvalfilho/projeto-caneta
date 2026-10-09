@@ -37,6 +37,7 @@ const imageSquareURL = new URL(square, Astro.site ?? Astro.url).href;
 		<title>{title}</title>
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalURL} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
 
 		<!-- Open Graph / WhatsApp / Facebook Core Tags -->
 		<meta property="og:site_name" content="ArtTools" />
