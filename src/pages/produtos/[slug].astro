@@ -174,6 +174,8 @@ const pageImage = '/images/og-produto-03mm.jpg';
 							iconPosition="left"
 							class="notify-btn rounded-sm py-3.5 text-xs font-mono uppercase tracking-widest"
 							data-product={product.title}
+							data-product-slug={product.slug}
+							data-product-series={product.series}
 						>
 							<span>AVISE-ME</span>
 						</Button>
@@ -416,6 +418,28 @@ const pageImage = '/images/og-produto-03mm.jpg';
 					e.preventDefault();
 					const target = e.currentTarget as HTMLElement;
 					const productName = target.getAttribute('data-product') || '';
+					const productSlug = target.getAttribute('data-product-slug') || '';
+
+					// 1. Envio para o Google Analytics 4 (gtag.js)
+					if (typeof (window as any).gtag === 'function') {
+						(window as any).gtag('event', 'click_avise_me', {
+							event_category: 'Engajamento',
+							event_label: productName,
+							product_name: productName,
+							product_slug: productSlug,
+							page_location: window.location.href,
+						});
+					}
+
+					// 2. Envio para o Google Tag Manager (dataLayer)
+					(window as any).dataLayer = (window as any).dataLayer || [];
+					(window as any).dataLayer.push({
+						event: 'click_avise_me',
+						product_name: productName,
+						product_slug: productSlug,
+						page_path: window.location.pathname,
+					});
+
 					openModal(productName);
 				});
 			});
@@ -434,6 +458,26 @@ const pageImage = '/images/og-produto-03mm.jpg';
 
 			form.addEventListener('submit', (e) => {
 				e.preventDefault();
+				const currentProduct = modalTitle?.textContent?.replace(/^AVISE-ME\s*•?\s*/, '') || '';
+
+				// Medição de Lead/Conversão no Google Analytics 4
+				if (typeof (window as any).gtag === 'function') {
+					(window as any).gtag('event', 'generate_lead', {
+						event_category: 'Conversões',
+						event_label: currentProduct,
+						product_name: currentProduct,
+						page_location: window.location.href,
+					});
+				}
+
+				// Medição de Lead no Google Tag Manager
+				(window as any).dataLayer = (window as any).dataLayer || [];
+				(window as any).dataLayer.push({
+					event: 'generate_lead',
+					product_name: currentProduct,
+					page_path: window.location.pathname,
+				});
+
 				form.classList.add('hidden');
 				success.classList.remove('hidden');
 				setTimeout(() => {
