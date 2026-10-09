@@ -90,15 +90,21 @@ const product = {
 interface Props {
 	title?: string;
 	description?: string;
+	image?: string;
 }
 
 const {
-	title = 'Titanium Stealth Minimalist | Avise-me Quando Chegar | ArtTools',
-	description = 'Titanium Stealth Minimalist AR-TS01 em titânio aeroespacial Grau 5. Lote exclusivo esgotado — cadastre-se no formulário "Avise-me" para receber alerta do próximo lote.',
+	title = 'Caneta ArtTools 0.3 mm — Edição Limitada | Avise-me quando chegar',
+	description = 'A ArtTools 0.3 mm está esgotada. Cadastre seu e-mail e seja o primeiro a saber da reposição.',
+	image = '/images/og-produto-03mm.jpg',
 } = Astro.props;
 ---
 
-<Layout title={title} description={description}>
+<Layout
+	title={title}
+	description={description}
+	image={image}
+>
 	<div class="min-h-screen bg-[#EAEAE5] pt-28 md:pt-36 selection:bg-stone-900 selection:text-white">
 		<!-- 1. BREADCRUMBS -->
 		<div class="max-w-[1440px] mx-auto px-6 md:px-24 mb-10 text-left">

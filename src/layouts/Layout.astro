@@ -7,18 +7,19 @@ import '../styles/global.css';
 interface Props {
 	title?: string;
 	description?: string;
-	canonicalURL?: string | URL;
+	canonicalURL?: string;
+	image?: string;
 }
 
 const {
-	title = 'ArtTools | A Caneta Mais Tecnológica do Mundo',
-	description = 'ArtTools Precision Pen: instrumento de escrita de alta precisão com engenharia suíça, fluxo contínuo e design minimalista em titânio.',
-	canonicalURL,
+	title = 'ArtTools — Canetas técnicas para quem desenha a sério',
+	description = 'Canetas ArtTools: precisão, acabamento premium e traço constante para ilustradores e designers.',
+	canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href,
+	image = '/images/og-default.jpg',
 } = Astro.props;
 
-const canonical = canonicalURL
-	? (typeof canonicalURL === 'string' ? canonicalURL : canonicalURL.href)
-	: new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+// Redes sociais só aceitam URL absoluta na imagem
+const imageURL = new URL(image, Astro.site ?? Astro.url).href;
 ---
 
 <!doctype html>
@@ -28,7 +29,21 @@ const canonical = canonicalURL
 		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		<link rel="canonical" href={canonical} />
+		<link rel="canonical" href={canonicalURL} />
+
+		<!-- Open Graph -->
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={imageURL} />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:type" content="website" />
+
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={imageURL} />
+
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<link rel="icon" href="/favicon.ico" />
 
