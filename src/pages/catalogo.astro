@@ -1,0 +1,257 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import { products } from '../data/products';
+---
+
+<Layout
+	title="Coleção completa ArtTools — Todos os modelos e pontas"
+	description="Veja todas as espessuras de ponta, acabamentos e edições da linha ArtTools."
+	image="/images/og-catalogo.jpg"
+>
+	<div class="min-h-screen bg-[#EAEAE5] pt-28 md:pt-36 pb-28 selection:bg-stone-900 selection:text-white">
+		<div class="max-w-[1440px] mx-auto px-6 md:px-24">
+			<!-- Header Section -->
+			<div class="mb-14 md:mb-16 text-left flex flex-col items-start">
+				<!-- Pill Badge -->
+				<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-200/60 border border-stone-300/80 text-stone-600 text-xs font-mono mb-6">
+					<span class="w-1.5 h-1.5 bg-stone-500 rounded-full"></span>
+					<span>Catálogo Exclusivo</span>
+				</div>
+
+				<!-- Title -->
+				<h1
+					class="font-display text-4xl sm:text-5xl md:text-6xl font-normal tracking-tight text-stone-900 mb-6 leading-[1.08] text-left"
+				>
+					Instrumentos de Escrita de<br />
+					Precisão
+				</h1>
+
+				<!-- Subtitle -->
+				<p class="text-stone-600 text-sm md:text-base font-light max-w-xl leading-relaxed text-left">
+					Explore nossa coleção exclusiva de canetas de alta engenharia. Devido à altíssima
+					demanda, selecione qualquer modelo e cadastre-se para ser notificado no próximo lote.
+				</p>
+			</div>
+
+			<!-- Product Grid (3x3 on desktop) -->
+			<h2 class="sr-only">Modelos e Edições Disponíveis</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+				{
+					products.map((pen, idx) => (
+						<ProductCard
+							id={pen.id}
+							slug={pen.slug}
+							title={pen.title}
+							badgeLeft={pen.badgeLeft}
+							badgeRight={pen.badgeRight}
+							image={pen.image}
+							description={pen.description}
+							pena={pen.pena}
+							material={pen.material}
+							recarga={pen.recarga}
+							loading={idx < 3 ? 'eager' : 'lazy'}
+							fetchpriority={idx < 3 ? 'high' : 'auto'}
+						/>
+					))
+				}
+			</div>
+
+			<!-- Bottom Guarantee & Assistance Note -->
+			<div
+				class="mt-20 p-8 md:p-12 border border-stone-300 bg-white/70 backdrop-blur-sm rounded-none flex flex-col md:flex-row items-center justify-between gap-6"
+			>
+				<div class="space-y-1 text-center md:text-left">
+					<h2 class="font-display text-xl font-medium text-stone-900">
+						Garantia Vitalícia & Certificado Suíço
+					</h2>
+					<p class="text-sm text-stone-500 font-light max-w-xl">
+						Todos os instrumentos acompanham número de série gravado a laser e garantia integral
+						contra defeitos de fabricação.
+					</p>
+				</div>
+				<div class="flex items-center gap-4 shrink-0 flex-wrap">
+					<Button href="/" variant="secondary" size="md" class="rounded-none">
+						Voltar ao Início
+					</Button>
+					<Button href="/produtos/arttools-03mm" variant="primary" size="md" class="rounded-none">
+						Caneta 0.3 mm
+					</Button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Notify Me Interactive Modal -->
+		<div
+			id="notify-modal"
+			class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 px-4"
+		>
+			<div
+				class="relative w-full max-w-md bg-white border border-stone-300 rounded-none p-8 shadow-2xl scale-95 transition-transform duration-300 text-left"
+				id="notify-modal-card"
+			>
+				<button
+					id="close-modal"
+					class="absolute top-5 right-5 text-stone-400 hover:text-stone-900 transition-colors p-1"
+					aria-label="Fechar"
+				>
+					<Icon name="solar:close-circle-linear" class="text-2xl" />
+				</button>
+
+				<div class="w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center text-stone-900 mb-4">
+					<Icon name="solar:bell-bold-duotone" class="text-xl" />
+				</div>
+
+				<h2 class="font-display text-2xl font-medium text-stone-900 mb-1" id="modal-product-title">
+					AVISE-ME
+				</h2>
+				<p class="text-xs font-mono text-stone-500 uppercase tracking-wider mb-6">
+					Notificação de Disponibilidade
+				</p>
+
+				<form id="notify-form" class="space-y-4">
+					<div>
+						<label for="p2-notify-name" class="block text-xs font-mono uppercase tracking-wider text-stone-500 mb-2">
+							Nome Completo
+						</label>
+						<input
+							type="text"
+							name="name"
+							id="p2-notify-name"
+							required
+							placeholder="Seu nome"
+							class="w-full px-4 py-3 border border-stone-300 rounded-none bg-stone-50 text-stone-900 text-sm focus:outline-none focus:border-stone-900 focus:bg-white transition-colors"
+						/>
+					</div>
+
+					<div>
+						<label for="p2-notify-phone" class="block text-xs font-mono uppercase tracking-wider text-stone-500 mb-2">
+							Telefone / WhatsApp
+						</label>
+						<input
+							type="tel"
+							name="phone"
+							id="p2-notify-phone"
+							required
+							placeholder="(11) 99999-9999"
+							class="w-full px-4 py-3 border border-stone-300 rounded-none bg-stone-50 text-stone-900 text-sm focus:outline-none focus:border-stone-900 focus:bg-white transition-colors"
+						/>
+					</div>
+
+					<div>
+						<label for="p2-notify-email" class="block text-xs font-mono uppercase tracking-wider text-stone-500 mb-2">
+							E-mail Principal
+						</label>
+						<input
+							type="email"
+							name="email"
+							id="p2-notify-email"
+							required
+							placeholder="seu@email.com"
+							class="w-full px-4 py-3 border border-stone-300 rounded-none bg-stone-50 text-stone-900 text-sm focus:outline-none focus:border-stone-900 focus:bg-white transition-colors"
+						/>
+					</div>
+
+					<Button
+						type="submit"
+						variant="primary"
+						size="lg"
+						fullWidth={true}
+						class="rounded-none py-3.5 text-xs font-mono uppercase tracking-widest mt-2"
+					>
+						Confirmar Cadastro
+					</Button>
+				</form>
+
+				<!-- Success State -->
+				<div id="notify-success" class="hidden text-center py-6 space-y-3">
+					<div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto text-xl">
+						✓
+					</div>
+					<h3 class="font-display text-xl text-stone-900 font-medium">Cadastro Confirmado</h3>
+					<p class="text-sm text-stone-600 font-light leading-relaxed">
+						Você receberá um link prioritário via WhatsApp e e-mail minutos antes da abertura oficial do próximo lote.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Client Logic -->
+	<script>
+		const initModal = () => {
+			const modal = document.getElementById('notify-modal');
+			const modalCard = document.getElementById('notify-modal-card');
+			const closeBtn = document.getElementById('close-modal');
+			const modalTitle = document.getElementById('modal-product-title');
+			const form = document.getElementById('notify-form') as HTMLFormElement | null;
+			const success = document.getElementById('notify-success');
+			const notifyButtons = document.querySelectorAll('.notify-btn');
+
+			if (!modal || !modalCard || !closeBtn || !form || !success) return;
+
+			const openModal = (productName: string) => {
+				if (modalTitle) {
+					modalTitle.textContent = productName ? `AVISE-ME • ${productName.toUpperCase()}` : 'AVISE-ME';
+				}
+				modal.classList.remove('opacity-0', 'pointer-events-none');
+				modal.classList.add('opacity-100', 'pointer-events-auto');
+				modalCard.classList.remove('scale-95');
+				modalCard.classList.add('scale-100');
+				document.body.style.overflow = 'hidden';
+			};
+
+			const closeModal = () => {
+				modal.classList.remove('opacity-100', 'pointer-events-auto');
+				modal.classList.add('opacity-0', 'pointer-events-none');
+				modalCard.classList.remove('scale-100');
+				modalCard.classList.add('scale-95');
+				document.body.style.overflow = '';
+				setTimeout(() => {
+					form.reset();
+					form.classList.remove('hidden');
+					success.classList.add('hidden');
+				}, 300);
+			};
+
+			notifyButtons.forEach((btn) => {
+				btn.addEventListener('click', (e) => {
+					e.preventDefault();
+					const target = e.currentTarget as HTMLElement;
+					const productName = target.getAttribute('data-product') || '';
+					openModal(productName);
+				});
+			});
+
+			closeBtn.addEventListener('click', closeModal);
+
+			modal.addEventListener('click', (e) => {
+				if (e.target === modal) closeModal();
+			});
+
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && modal.classList.contains('opacity-100')) {
+					closeModal();
+				}
+			});
+
+			form.addEventListener('submit', (e) => {
+				e.preventDefault();
+				form.classList.add('hidden');
+				success.classList.remove('hidden');
+				setTimeout(() => {
+					closeModal();
+				}, 3500);
+			});
+		};
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initModal);
+		} else {
+			initModal();
+		}
+		document.addEventListener('astro:page-load', initModal);
+	</script>
+</Layout>

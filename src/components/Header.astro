@@ -23,13 +23,13 @@ const navItems = [
 	},
 	{
 		label: 'Catálogo',
-		href: '/pagina-2',
+		href: '/catalogo',
 		description: 'Acabamentos e variantes exclusivas',
 		number: '03',
 	},
 	{
 		label: 'Produto',
-		href: '/produto',
+		href: '/produtos/arttools-03mm',
 		description: 'Titanium Stealth Minimalist AR-TS01',
 		number: '04',
 	},
@@ -67,7 +67,9 @@ const navItems = [
 							? pathname === '/'
 							: item.href === '/#tech-specs'
 								? false
-								: pathname.startsWith(item.href) || (item.href === '/produto' && pathname.startsWith('/pagina-3'));
+								: item.href.startsWith('/produtos')
+									? pathname.startsWith('/produtos')
+									: pathname.startsWith(item.href);
 
 					return (
 						<a
@@ -134,7 +136,9 @@ const navItems = [
 								? pathname === '/'
 								: item.href === '/#tech-specs'
 									? false
-									: pathname.startsWith(item.href) || (item.href === '/produto' && pathname.startsWith('/pagina-3'));
+									: item.href.startsWith('/produtos')
+										? pathname.startsWith('/produtos')
+										: pathname.startsWith(item.href);
 
 						return (
 							<a
@@ -199,7 +203,7 @@ const navItems = [
 			<!-- Bottom Section / CTA & Metadata -->
 			<div class="mt-8 pt-6 flex flex-col gap-4 border-t border-stone-300/60">
 				<a
-					href="/produto"
+					href="/produtos/arttools-03mm"
 					data-nav-link
 					class="group w-full py-3.5 px-5 bg-stone-900 hover:bg-stone-800 active:bg-stone-950 text-white rounded-xl shadow-md transition-all flex items-center justify-between active:scale-[0.99]"
 				>
@@ -293,7 +297,9 @@ const navItems = [
 						? currentPath === '/'
 						: href.startsWith('/#')
 							? false
-							: currentPath.startsWith(href) || (href === '/produto' && currentPath.startsWith('/pagina-3'));
+							: href.startsWith('/produtos')
+								? currentPath.startsWith('/produtos')
+								: currentPath.startsWith(href);
 
 					if (isMatch) {
 						link.classList.remove('text-stone-600', 'border-transparent');
@@ -313,7 +319,9 @@ const navItems = [
 						? currentPath === '/'
 						: href.startsWith('/#')
 							? false
-							: currentPath.startsWith(href) || (href === '/produto' && currentPath.startsWith('/pagina-3'));
+							: href.startsWith('/produtos')
+								? currentPath.startsWith('/produtos')
+								: currentPath.startsWith(href);
 
 					const numEl = link.querySelector('.nav-num');
 					const titleEl = link.querySelector('.nav-title');
