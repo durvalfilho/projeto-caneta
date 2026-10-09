@@ -86,9 +86,19 @@ const product = {
 		},
 	],
 };
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = 'Titanium Stealth Minimalist | Avise-me Quando Chegar | ArtTools',
+	description = 'Titanium Stealth Minimalist AR-TS01 em titânio aeroespacial Grau 5. Lote exclusivo esgotado — cadastre-se no formulário "Avise-me" para receber alerta do próximo lote.',
+} = Astro.props;
 ---
 
-<Layout title={`${product.title} | ARTOOLS.PRO`}>
+<Layout title={title} description={description}>
 	<div class="min-h-screen bg-[#EAEAE5] pt-28 md:pt-36 selection:bg-stone-900 selection:text-white">
 		<!-- 1. BREADCRUMBS -->
 		<div class="max-w-[1440px] mx-auto px-6 md:px-24 mb-10 text-left">

@@ -1,9 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 128 128">
-    <path d="M50.4 78.5a75.1 75.1 0 0 0-28.5 6.9l24.2-65.7c.7-2 1.9-3.2 3.4-3.2h29c1.5 0 2.7 1.2 3.4 3.2l24.2 65.7s-11.6-7-28.5-7L67 45.5c-.4-1.7-1.6-2.8-2.9-2.8-1.3 0-2.5 1.1-2.9 2.7L50.4 78.5Zm-1.1 28.2Zm-4.2-20.2c-2 6.6-.6 15.8 4.2 20.2a17.5 17.5 0 0 1 .2-.7 5.5 5.5 0 0 1 5.7-4.5c2.8.1 4.3 1.5 4.7 4.7.2 1.1.2 2.3.2 3.5v.4c0 2.7.7 5.2 2.2 7.4a13 13 0 0 0 5.7 4.9v-.3l-.2-.3c-1.8-5.6-.5-9.5 4.4-12.8l1.5-1a73 73 0 0 0 3.2-2.2 16 16 0 0 0 6.8-11.4c.3-2 .1-4-.6-6l-.8.6-1.6 1a37 37 0 0 1-22.4 2.7c-5-.7-9.7-2-13.2-6.2Z" />
-    <style>
-        path { fill: #000; }
-        @media (prefers-color-scheme: dark) {
-            path { fill: #FFF; }
-        }
-    </style>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient (Obsidian to Deep Onyx) -->
+    <linearGradient id="art-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="60%" stop-color="#0c0a09"/>
+      <stop offset="100%" stop-color="#040405"/>
+    </linearGradient>
+
+    <!-- Subtle Golden Precision Ambient Aura -->
+    <radialGradient id="art-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 18K Gold Metallic Gradient -->
+    <linearGradient id="art-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="35%" stop-color="#EAB308"/>
+      <stop offset="70%" stop-color="#CA8A04"/>
+      <stop offset="100%" stop-color="#854D0E"/>
+    </linearGradient>
+
+    <!-- Aerospace Titanium Left Wing (Mirror Polish Highlight) -->
+    <linearGradient id="art-ti-l" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="60%" stop-color="#F1F5F9"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+
+    <!-- Aerospace Titanium Right Wing (Satin Brushed Shadow) -->
+    <linearGradient id="art-ti-r" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#CBD5E1"/>
+      <stop offset="60%" stop-color="#94A3B8"/>
+      <stop offset="100%" stop-color="#64748B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle Container for Universal Tab Contrast -->
+  <rect width="128" height="128" rx="28" fill="url(#art-bg)"/>
+  <circle cx="64" cy="64" r="48" fill="url(#art-glow)"/>
+  <rect x="1.5" y="1.5" width="125" height="125" rx="26.5" fill="none" stroke="#27272A" stroke-width="1.5"/>
+
+  <!-- Precision 0.3mm Nib (Left Titanium Mirror Facet) -->
+  <path d="M64 16 L64 56 C61 56 59 58.5 59 62 C59 65.5 61 68 64 68 L64 102 L44 102 C42 88 40 80 34 70 C28 60 40 40 64 16 Z" fill="url(#art-ti-l)"/>
+
+  <!-- Precision 0.3mm Nib (Right Titanium Satin Facet) -->
+  <path d="M64 16 L64 56 C67 56 69 58.5 69 62 C69 65.5 67 68 64 68 L64 102 L84 102 C86 88 88 80 94 70 C100 60 88 40 64 16 Z" fill="url(#art-ti-r)"/>
+
+  <!-- 18K Gold Precision Chevron Inlay -->
+  <path d="M64 34 L74 48 C72 56 68 62 64 63 C60 62 56 56 54 48 Z" fill="url(#art-gold)"/>
+
+  <!-- Breather Hole & 18K Gold Halo -->
+  <circle cx="64" cy="62" r="6" fill="#0C0A09"/>
+  <circle cx="64" cy="62" r="3.5" fill="url(#art-gold)"/>
+
+  <!-- Capillary Slit (Fenda de Alimentação Capilar) -->
+  <line x1="64" y1="16" x2="64" y2="56" stroke="#0C0A09" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="64" y1="68" x2="64" y2="102" stroke="#0C0A09" stroke-width="2.2"/>
+
+  <!-- 18K Gold Collar Ring & CNC Machined Titanium Grip -->
+  <rect x="40" y="102" width="48" height="6" rx="2" fill="url(#art-gold)"/>
+  <rect x="43" y="110" width="42" height="4" rx="1.5" fill="#334155"/>
+  <line x1="47" y1="112" x2="81" y2="112" stroke="#64748B" stroke-width="1" stroke-dasharray="2 3"/>
 </svg>
