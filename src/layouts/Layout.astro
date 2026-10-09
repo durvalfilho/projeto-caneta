@@ -32,6 +32,14 @@ const imageSquareURL = new URL(square, Astro.site ?? Astro.url).href;
 <!doctype html>
 <html class="scroll-smooth" lang="pt-BR">
 	<head>
+		<!-- Google Tag Manager -->
+		<script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NSXG7KPX');</script>
+		<!-- End Google Tag Manager -->
+
 		<meta charset="utf-8" />
 		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 		<title>{title}</title>
@@ -111,6 +119,24 @@ const imageSquareURL = new URL(square, Astro.site ?? Astro.url).href;
 	</head>
 
 	<body class="antialiased min-h-screen relative selection:bg-stone-800 selection:text-white flex flex-col">
+		<!-- Google Tag Manager (noscript) -->
+		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NSXG7KPX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+
+		<!-- Suporte ao rastreamento de navegações no Astro View Transitions -->
+		<script is:inline>
+			document.addEventListener('astro:page-load', function () {
+				window.dataLayer = window.dataLayer || [];
+				window.dataLayer.push({
+					event: 'page_view',
+					page_location: window.location.href,
+					page_path: window.location.pathname,
+					page_title: document.title
+				});
+			});
+		</script>
+
 		<div class="noise-overlay" transition:persist></div>
 
 		<!-- Mantendo o topo do site fixo entre páginas -->
