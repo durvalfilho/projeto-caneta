@@ -294,7 +294,7 @@ const pageImage = '/images/og-produto-03mm.jpg';
 						</label>
 						<input
 							type="text"
-							name="name"
+							name="nome"
 							id="notify-name"
 							required
 							placeholder="Seu nome"
@@ -308,7 +308,7 @@ const pageImage = '/images/og-produto-03mm.jpg';
 						</label>
 						<input
 							type="tel"
-							name="phone"
+							name="telefone"
 							id="notify-phone"
 							required
 							placeholder="(11) 99999-9999"
@@ -484,6 +484,30 @@ const pageImage = '/images/og-produto-03mm.jpg';
 			form.addEventListener('submit', (e) => {
 				e.preventDefault();
 				const currentProduct = modalTitle?.textContent?.replace(/^AVISE-ME\s*•?\s*/, '') || '';
+				const nameInput = form.querySelector('input[name="nome"]') as HTMLInputElement | null;
+				const phoneInput = form.querySelector('input[name="telefone"]') as HTMLInputElement | null;
+				const emailInput = form.querySelector('input[name="email"]') as HTMLInputElement | null;
+
+				const payload = {
+					nome: nameInput?.value.trim() || '',
+					telefone: phoneInput?.value.trim() || '',
+					email: emailInput?.value.trim() || '',
+					produto: currentProduct,
+				};
+
+				// Envio direto para o Google Sheets (Apps Script Web App)
+				fetch(
+					'https://script.google.com/macros/s/AKfycbyrOPtNhmYu0lYbtJyuVXMbYsUqbald5qSqQKepAifWj9KhPpoTEVOCit4-F288l8x4kw/exec',
+					{
+						method: 'POST',
+						headers: {
+							'Content-Type': 'text/plain;charset=utf-8',
+						},
+						body: JSON.stringify(payload),
+					}
+				).catch((err) => {
+					console.error('Erro ao registrar na planilha:', err);
+				});
 
 				// Medição de Lead/Conversão no Google Analytics 4
 				if (typeof (window as any).gtag === 'function') {
