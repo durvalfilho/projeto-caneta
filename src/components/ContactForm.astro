@@ -1,0 +1,147 @@
+---
+// src/components/ContactForm.astro
+interface Props {
+	class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<form
+	id="excel-form"
+	class:list={[
+		'flex flex-col gap-4 max-w-md mx-auto p-6 border border-stone-300 rounded-lg shadow-sm bg-white text-stone-900',
+		className,
+	]}
+>
+	<div>
+		<label for="nome" class="block text-sm font-medium mb-1 text-stone-900">Nome completo</label>
+		<input
+			type="text"
+			id="nome"
+			name="nome"
+			required
+			placeholder="Ex: Maria Silva"
+			class="border border-stone-300 p-2.5 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-stone-900 bg-white"
+		/>
+	</div>
+
+	<div>
+		<label for="telefone" class="block text-sm font-medium mb-1 text-stone-900">Telefone / WhatsApp</label>
+		<input
+			type="tel"
+			id="telefone"
+			name="telefone"
+			required
+			placeholder="Ex: (11) 99999-9999"
+			class="border border-stone-300 p-2.5 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-stone-900 bg-white"
+		/>
+	</div>
+
+	<div>
+		<label for="email" class="block text-sm font-medium mb-1 text-stone-900">E-mail</label>
+		<input
+			type="email"
+			id="email"
+			name="email"
+			required
+			placeholder="Ex: maria@email.com"
+			class="border border-stone-300 p-2.5 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-stone-900 bg-white"
+		/>
+	</div>
+
+	<button
+		type="submit"
+		id="submit-btn"
+		class="bg-blue-600 text-white font-medium py-2.5 px-4 rounded hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer"
+	>
+		Enviar Cadastro
+	</button>
+
+	<p id="status-msg" class="text-sm font-semibold hidden text-center mt-2"></p>
+</form>
+
+<script>
+	const SCRIPT_URL =
+		'https://script.google.com/macros/s/AKfycbyrOPtNhmYu0lYbtJyuVXMbYsUqbald5qSqQKepAifWj9KhPpoTEVOCit4-F288l8x4kw/exec';
+
+	const initContactForm = () => {
+		const form = document.getElementById('excel-form') as HTMLFormElement | null;
+		const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+		const statusMsg = document.getElementById('status-msg') as HTMLParagraphElement | null;
+
+		if (!form || !submitBtn || !statusMsg) return;
+		if ((form as any)._hasContactSubmitListener) return;
+		(form as any)._hasContactSubmitListener = true;
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+
+			const formData = new FormData(form);
+			const data = {
+				nome: (formData.get('nome') as string)?.trim() || '',
+				telefone: (formData.get('telefone') as string)?.trim() || '',
+				email: (formData.get('email') as string)?.trim() || '',
+			};
+
+			// Estado visual de envio
+			submitBtn.disabled = true;
+			const originalBtnText = submitBtn.textContent || 'Enviar Cadastro';
+			submitBtn.textContent = 'Enviando...';
+
+			statusMsg.className = 'text-sm font-medium text-stone-500 text-center mt-2 block';
+			statusMsg.textContent = 'Gravando na planilha...';
+
+			try {
+				const response = await fetch(SCRIPT_URL, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'text/plain;charset=utf-8',
+					},
+					body: JSON.stringify(data),
+				});
+
+				const result = await response.json();
+
+				if (result.result === 'success') {
+					statusMsg.className = 'text-sm font-semibold text-emerald-600 text-center mt-2 block';
+					statusMsg.textContent = '✓ Cadastro realizado com sucesso!';
+					form.reset();
+
+					// Eventos de conversão no Meta Pixel e Analytics
+					if (typeof (window as any).fbq === 'function') {
+						(window as any).fbq('track', 'Lead', {
+							content_name: 'Formulário Contato Planilha',
+						});
+					}
+					if (typeof (window as any).gtag === 'function') {
+						(window as any).gtag('event', 'generate_lead', {
+							event_category: 'Conversões',
+							event_label: 'Planilha Google Sheets',
+						});
+					}
+
+					setTimeout(() => {
+						statusMsg.classList.add('hidden');
+					}, 6000);
+				} else {
+					throw new Error(result.error || 'Erro no retorno da planilha');
+				}
+			} catch (error) {
+				console.error('Erro ao enviar formulário:', error);
+				statusMsg.className = 'text-sm font-semibold text-rose-600 text-center mt-2 block';
+				statusMsg.textContent = '✕ Ocorreu um erro ao enviar. Tente novamente.';
+			} finally {
+				submitBtn.disabled = false;
+				submitBtn.textContent = originalBtnText;
+			}
+		});
+	};
+
+	document.addEventListener('astro:page-load', initContactForm);
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initContactForm);
+	} else {
+		initContactForm();
+	}
+</script>
