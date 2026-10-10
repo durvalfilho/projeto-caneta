@@ -422,6 +422,9 @@ const pageImage = '/images/og-produto-03mm.jpg';
 			}
 
 			notifyButtons.forEach((btn) => {
+				if ((btn as any)._hasNotifyListener) return;
+				(btn as any)._hasNotifyListener = true;
+
 				btn.addEventListener('click', (e) => {
 					e.preventDefault();
 					const target = e.currentTarget as HTMLElement;
@@ -448,11 +451,17 @@ const pageImage = '/images/og-produto-03mm.jpg';
 						page_path: window.location.pathname,
 					});
 
-					// 3. Envio para o Meta Pixel (fbq)
+					// 3. Envio para o Meta Pixel (fbq) - configurado igual ao Analytics
 					if (typeof (window as any).fbq === 'function') {
-						(window as any).fbq('trackCustom', 'ClickAviseMe', {
+						(window as any).fbq('trackCustom', 'click_avise_me', {
+							event_category: 'Engajamento',
+							event_label: productName,
+							product_name: productName,
+							product_slug: productSlug,
 							content_name: productName,
 							content_ids: [productSlug],
+							content_type: 'product',
+							page_location: window.location.href,
 						});
 					}
 
