@@ -240,6 +240,13 @@ import { products } from '../data/products';
 						page_path: window.location.pathname,
 					});
 
+					// 3. Envio para o Meta Pixel (fbq)
+					if (typeof (window as any).fbq === 'function') {
+						(window as any).fbq('trackCustom', 'ClickAviseMe', {
+							content_name: productName,
+						});
+					}
+
 					openModal(productName);
 				});
 			});
@@ -277,6 +284,13 @@ import { products } from '../data/products';
 					product_name: currentProduct,
 					page_path: window.location.pathname,
 				});
+
+				// Medição de Lead no Meta Pixel
+				if (typeof (window as any).fbq === 'function') {
+					(window as any).fbq('track', 'Lead', {
+						content_name: currentProduct,
+					});
+				}
 
 				form.classList.add('hidden');
 				success.classList.remove('hidden');

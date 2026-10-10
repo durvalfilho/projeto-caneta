@@ -413,6 +413,14 @@ const pageImage = '/images/og-produto-03mm.jpg';
 				}, 200);
 			};
 
+			// Disparo de visualização de produto no Meta Pixel
+			if (typeof (window as any).fbq === 'function') {
+				(window as any).fbq('track', 'ViewContent', {
+					content_name: document.title,
+					content_type: 'product',
+				});
+			}
+
 			notifyButtons.forEach((btn) => {
 				btn.addEventListener('click', (e) => {
 					e.preventDefault();
@@ -439,6 +447,14 @@ const pageImage = '/images/og-produto-03mm.jpg';
 						product_slug: productSlug,
 						page_path: window.location.pathname,
 					});
+
+					// 3. Envio para o Meta Pixel (fbq)
+					if (typeof (window as any).fbq === 'function') {
+						(window as any).fbq('trackCustom', 'ClickAviseMe', {
+							content_name: productName,
+							content_ids: [productSlug],
+						});
+					}
 
 					openModal(productName);
 				});
@@ -477,6 +493,13 @@ const pageImage = '/images/og-produto-03mm.jpg';
 					product_name: currentProduct,
 					page_path: window.location.pathname,
 				});
+
+				// Medição de Lead no Meta Pixel
+				if (typeof (window as any).fbq === 'function') {
+					(window as any).fbq('track', 'Lead', {
+						content_name: currentProduct,
+					});
+				}
 
 				form.classList.add('hidden');
 				success.classList.remove('hidden');
