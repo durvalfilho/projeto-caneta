@@ -475,6 +475,10 @@ const pageImage = '/images/og-produto-03mm.jpg';
 			form.addEventListener('submit', (e) => {
 				e.preventDefault();
 				const currentProduct = modalTitle?.textContent?.replace(/^AVISE-ME\s*•?\s*/, '') || '';
+				const nameVal = (form.querySelector('input[name="name"]') as HTMLInputElement)?.value || '';
+				const phoneVal = (form.querySelector('input[name="phone"]') as HTMLInputElement)?.value || '';
+				const emailVal = (form.querySelector('input[name="email"]') as HTMLInputElement)?.value || '';
+				const eventId = `lead_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 				// Medição de Lead/Conversão no Google Analytics 4
 				if (typeof (window as any).gtag === 'function') {
@@ -494,12 +498,27 @@ const pageImage = '/images/og-produto-03mm.jpg';
 					page_path: window.location.pathname,
 				});
 
-				// Medição de Lead no Meta Pixel
+				// Medição de Lead no Meta Pixel (Navegador com ID de desduplicação)
 				if (typeof (window as any).fbq === 'function') {
 					(window as any).fbq('track', 'Lead', {
 						content_name: currentProduct,
-					});
+					}, { eventID: eventId });
 				}
+
+				// Medição de Lead na Meta Conversions API (Servidor)
+				fetch('/api/lead', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						name: nameVal,
+						phone: phoneVal,
+						email: emailVal,
+						productName: currentProduct,
+						eventId: eventId,
+					}),
+				}).catch((err) => {
+					console.warn('Falha no envio do Lead via servidor:', err);
+				});
 
 				form.classList.add('hidden');
 				success.classList.remove('hidden');
