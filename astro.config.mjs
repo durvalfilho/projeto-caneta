@@ -6,12 +6,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import vercel from '@astrojs/vercel';
-
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://projeto-caneta-gamma.vercel.app',
-	adapter: vercel(),
 	integrations: [
 		sitemap({
 			changefreq: 'weekly',
